@@ -117,7 +117,7 @@
 (function(){
   var t = null;
   try{ t = localStorage.getItem('bg_theme'); }catch(e){}
-  if(!t){ t = (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light'; }
+  if(!t){ t = 'light'; }
   document.documentElement.setAttribute('data-theme', t);
 })();
 </script>
