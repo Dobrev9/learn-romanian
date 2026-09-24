@@ -121,6 +121,129 @@ footer{
     font-size:.85rem;
   }
 
+
+  /* ===== Ajouts : prononciation & conjugaison ===== */
+  :root{--ok:#4C7A4C;--ok-bg:#E4EFE1;--bad-bg:#F5DEDE;--paper:#fdfaf3;}
+  :root[data-theme="dark"]{--ok:#5E9A5E;--ok-bg:#1f3325;--bad-bg:#3a2028;--paper:#252b3b;}
+  .action.ghost{background:transparent;border-color:var(--muted2);color:var(--muted2);}
+  .action:disabled{opacity:.5;cursor:not-allowed;}
+  .rc{font-family:'Playfair Display',Georgia,serif;color:var(--blue);}
+  .tbl-scroll{overflow-x:auto;max-width:100%;}
+  .ipa{font-family:'Noto Sans','Segoe UI','DejaVu Sans',Arial,sans-serif;color:var(--green);white-space:nowrap;}
+  .st{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px;text-decoration-color:var(--red);font-weight:700;}
+  .say{display:inline-block;cursor:pointer;user-select:none;font-family:'Playfair Display',Georgia,serif;color:var(--blue);border:1px solid var(--cream-dark);background:var(--cream);border-radius:14px;padding:0 .55rem;margin:.15rem .1rem;line-height:1.6;transition:background .15s,border-color .15s;}
+  .say::after{content:" 🔊";font-size:.8em;}
+  .say:hover,.say:focus-visible{border-color:var(--gold);background:var(--cream-dark);outline:none;}
+  .say.playing{border-color:var(--red);}
+  td > .say:empty{padding:0 .4rem;}
+  td > .say:empty::after{content:"🔊";}
+  .sayf{cursor:pointer;border-bottom:1px dotted var(--muted);}
+  .sayf:hover,.sayf:focus-visible{border-bottom-color:var(--gold);outline:none;}
+  .sayf.playing{border-bottom-color:var(--red);}
+  #sec-pronunciation ol,#sec-pronunciation ul{padding-left:1.3rem;margin:.4rem 0;}
+  #sec-pronunciation li{margin:.2rem 0;}
+  #sec-pronunciation .gram h3{color:var(--blue);}
+
+  /* ---- Conjugaison : fiches + entraînement ---- */
+  .cj-tabs{display:flex;gap:.3rem;margin:0 0 1.3rem;border-bottom:2px solid var(--cream-dark);}
+  .cj-tab{font:inherit;font-size:1rem;background:transparent;border:none;padding:.6rem 1.1rem;cursor:pointer;color:var(--text2);border-bottom:3px solid transparent;margin-bottom:-2px;}
+  .cj-tab:hover{color:var(--red);}
+  .cj-tab.active{color:var(--red);font-weight:700;border-bottom-color:var(--red);}
+  .cj-card{background:var(--card);border:1px solid var(--cream-dark);border-left:5px solid var(--green);padding:1rem 1.15rem;margin-bottom:1.1rem;}
+  .cj-card h3{margin-bottom:.5rem;color:var(--blue);}
+  .cj-label{font-size:.85rem;color:var(--muted2);font-weight:700;margin:1.1rem 0 .45rem;}
+  .cj-label:first-child{margin-top:0;}
+  .cj-group-title{font-size:.85rem;color:var(--muted2);margin:.7rem 0 .3rem;}
+  .cj-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1rem;margin-bottom:.4rem;}
+  .cj-head .big{font-family:'Playfair Display',Georgia,serif;font-size:2rem;color:var(--blue);line-height:1.1;}
+  .cj-head .fr{font-size:1.1rem;color:var(--text2);}
+  .cj-badge{display:inline-block;font-size:.76rem;border:1px solid var(--green);color:var(--green);border-radius:12px;padding:.05rem .6rem;}
+  .cj-badge.gold{border-color:var(--gold);color:var(--gold);}
+  table.cj-table td.f{font-family:'Playfair Display',Georgia,serif;color:var(--blue);font-size:1.02rem;white-space:nowrap;}
+  table.cj-table td.p{color:var(--text2);white-space:nowrap;}
+  table.cj-table td.p small{color:var(--muted2);}
+  .cj-cta{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.8rem;}
+  .cj-modes{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:.7rem;}
+  .cj-mode{font:inherit;text-align:left;background:var(--cream);border:1.5px solid var(--cream-dark);padding:.65rem .8rem;cursor:pointer;color:var(--blue-dark);}
+  .cj-mode b{display:block;font-size:1rem;margin-bottom:.15rem;}
+  .cj-mode span{font-size:.82rem;color:var(--text2);line-height:1.35;display:block;}
+  .cj-mode:hover{border-color:var(--green);}
+  .cj-mode.active{border-color:var(--red);background:var(--card);box-shadow:inset 4px 0 0 var(--red);}
+  .cj-seg{display:inline-flex;border:1.5px solid var(--blue);border-radius:2px;overflow:hidden;}
+  .cj-seg button{font:inherit;font-size:.92rem;background:transparent;color:var(--blue);border:none;padding:.4rem .9rem;cursor:pointer;}
+  .cj-seg button + button{border-left:1.5px solid var(--blue);}
+  .cj-seg button.active{background:var(--blue);color:var(--cream);}
+  .cj-check{font-size:.9rem;color:var(--text2);display:inline-flex;gap:.4rem;align-items:center;cursor:pointer;}
+  .cj-chipline{display:flex;flex-wrap:wrap;gap:.45rem;}
+  .cj-chipline .chip.q{border-color:var(--gold);color:var(--gold);}
+  .cj-chipline .chip.q:hover{background:var(--gold);color:#fff;}
+  .cj-start{margin-top:1.3rem;display:flex;flex-wrap:wrap;gap:.8rem;align-items:center;}
+  .cj-start button.action{font-size:1.02rem;padding:.75rem 1.6rem;}
+  .cj-hint{font-size:.85rem;color:var(--muted2);}
+  .cj-stage{max-width:680px;}
+  .cj-top{display:flex;align-items:center;gap:.9rem;margin-bottom:.9rem;font-size:.85rem;color:var(--text2);}
+  .cj-top .bar-track{height:8px;}
+  .cj-top .bar-fill{background:var(--gold);transition:width .3s;}
+  .cj-streak{white-space:nowrap;font-weight:700;color:var(--blue);min-width:3.2rem;text-align:right;}
+  .cj-quit{background:none;border:none;color:var(--muted2);text-decoration:underline;cursor:pointer;font-size:.82rem;font-family:inherit;}
+  .cj-qbox{background:var(--card);border:1px solid var(--cream-dark);padding:1.3rem 1.4rem;}
+  .cj-kind{font-size:.85rem;color:var(--muted2);margin-bottom:.5rem;}
+  .cj-q{font-family:'Playfair Display',Georgia,serif;font-size:1.3rem;line-height:1.5;margin-bottom:1.1rem;}
+  .cj-q .v{color:var(--blue);font-weight:700;}
+  .cj-q small{font-family:'Source Sans 3',Arial,sans-serif;color:var(--muted2);font-size:.85rem;}
+  .cj-q .pill{display:inline-block;font-family:'Source Sans 3',Arial,sans-serif;font-size:.82rem;border-radius:12px;padding:.05rem .65rem;background:var(--cream);border:1px solid var(--cream-dark);color:var(--text2);vertical-align:middle;}
+  .cj-q .pill.t{background:var(--green);border-color:var(--green);color:#fff;}
+  .cj-q .pill.p{background:var(--gold);border-color:var(--gold);color:#fff;}
+  .cj-form{font-family:'Playfair Display',Georgia,serif;font-size:2rem;color:var(--blue);margin:.2rem 0 .1rem;display:block;}
+  .cj-blank{display:inline-block;min-width:5.5rem;border-bottom:3px solid var(--gold);text-align:center;color:var(--blue);font-weight:700;margin:0 .2rem;}
+  .cj-sent-fr{font-family:'Source Sans 3',Arial,sans-serif;font-size:.9rem;color:var(--text2);font-style:italic;margin-top:.3rem;}
+  .cj-hint-line{font-family:'Source Sans 3',Arial,sans-serif;font-size:.85rem;color:var(--muted2);margin-top:.5rem;}
+  .cj-opts{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;}
+  @media (max-width:560px){.cj-opts{grid-template-columns:1fr;}}
+  .cj-opts .opt-btn{font-family:'Playfair Display',Georgia,serif;font-size:1.08rem;margin-bottom:0;color:var(--blue-dark);}
+  .cj-opts .opt-btn.ok,.cj-opts .opt-btn.ko{color:#fff;}
+  .cj-opts .opt-btn .n{display:inline-block;width:1.4rem;color:var(--muted2);font-family:'Source Sans 3',Arial,sans-serif;font-size:.8rem;}
+  .cj-opts .opt-btn.ok .n,.cj-opts .opt-btn.ko .n{color:#fff;}
+  .cj-input{width:100%;font-family:'Playfair Display',Georgia,serif;font-size:1.3rem;padding:.6rem .8rem;border:1.5px solid var(--cream-dark);background:var(--paper);color:var(--blue-dark);border-radius:2px;}
+  .cj-input:focus{outline:none;border-color:var(--gold);}
+  .cj-input.correct{background:var(--ok-bg);border-color:var(--ok);}
+  .cj-input.incorrect{background:var(--bad-bg);border-color:var(--red);}
+  .cj-kbd{margin-top:.8rem;}
+  .cj-kbd summary{cursor:pointer;font-size:.85rem;color:var(--muted2);font-weight:400;}
+  .cj-keys{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.5rem;}
+  .cj-key{font-family:'Playfair Display',Georgia,serif;font-size:1.05rem;min-width:2.15rem;height:2.3rem;padding:0 .4rem;background:var(--paper);border:1px solid var(--cream-dark);color:var(--blue-dark);cursor:pointer;border-radius:3px;}
+  .cj-key:hover{border-color:var(--gold);}
+  .cj-key.wide{min-width:5rem;font-family:'Source Sans 3',Arial,sans-serif;font-size:.85rem;}
+  .cj-actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1rem;align-items:center;}
+  .cj-fill{display:grid;grid-template-columns:auto 1fr;gap:.45rem .8rem;align-items:center;margin-bottom:.3rem;}
+  .cj-fill label{color:var(--text2);font-size:.95rem;white-space:nowrap;}
+  .cj-fill .cj-input{font-size:1.1rem;padding:.4rem .65rem;}
+  .cj-fill .cell-fb{grid-column:2;font-size:.85rem;margin-top:-.25rem;color:var(--red);font-family:'Playfair Display',Georgia,serif;}
+  .cj-fb{margin-top:1rem;padding:.8rem 1rem;border-left:5px solid var(--ok);background:var(--ok-bg);}
+  .cj-fb.ko{border-left-color:var(--red);background:var(--bad-bg);}
+  .cj-fb .verdict{font-weight:700;margin-bottom:.15rem;}
+  .cj-fb .ans{font-family:'Playfair Display',Georgia,serif;font-size:1.25rem;color:var(--blue);}
+  .cj-fb .why{font-size:.88rem;color:var(--text2);margin-top:.4rem;}
+  .cj-para{display:grid;grid-template-columns:repeat(3,1fr);gap:.35rem;margin-top:.6rem;}
+  @media (max-width:520px){.cj-para{grid-template-columns:repeat(2,1fr);}}
+  .cj-para div{background:var(--card);border:1px solid var(--cream-dark);padding:.3rem .5rem;font-family:'Playfair Display',Georgia,serif;font-size:1rem;color:var(--blue);}
+  .cj-para div small{display:block;font-family:'Source Sans 3',Arial,sans-serif;font-size:.72rem;color:var(--muted2);}
+  .cj-para div.hi{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold);font-weight:700;}
+  .cj-result{background:var(--card);border:1px solid var(--cream-dark);padding:1.4rem;text-align:center;}
+  .cj-result .score{font-family:'Playfair Display',Georgia,serif;font-size:3rem;color:var(--blue);line-height:1.1;}
+  .cj-result .pct{font-size:1.1rem;color:var(--text2);}
+  .cj-result .msg{margin:.6rem 0 1rem;font-family:'Playfair Display',Georgia,serif;font-size:1.15rem;}
+  .cj-result .new{display:inline-block;background:var(--gold);color:#fff;font-size:.8rem;padding:.05rem .6rem;border-radius:12px;margin-left:.4rem;vertical-align:middle;}
+  .cj-brk{text-align:left;margin:1rem 0;}
+  .cj-brk .prog-row{margin-bottom:.5rem;}
+  .cj-brk .prog-row .lbl{width:130px;min-width:130px;font-weight:400;}
+  .cj-errs{text-align:left;margin-top:1.2rem;}
+  .cj-err{border-left:4px solid var(--red);background:var(--paper);padding:.5rem .8rem;margin-bottom:.5rem;font-size:.92rem;}
+  .cj-err .rof{font-family:'Playfair Display',Georgia,serif;color:var(--blue);font-size:1.02rem;}
+  .cj-err .was{color:var(--red);text-decoration:line-through;font-family:'Playfair Display',Georgia,serif;}
+  .cj-callout{background:var(--card);border:1px solid var(--cream-dark);border-left:5px solid var(--red);padding:.8rem 1rem;margin-bottom:1.2rem;display:flex;flex-wrap:wrap;gap:.6rem 1rem;align-items:center;justify-content:space-between;font-size:.95rem;color:var(--text2);}
+  #progress-conj .cj-label{margin-top:1rem;}
+
 </style>
 <script>
 (function(){
@@ -140,18 +263,20 @@ footer{
   <div class="ro-title">Să învățăm româna</div>
   <h1>Apprendre le roumain — A1 / A2</h1>
   <p class="byline">by Dobrev Mathis</p>
-  <p>Alphabet et prononciation, vocabulaire thématique, flashcards (français ➔ roumain), quiz, histoires courtes et cours de grammaire.</p>
+  <p>Alphabet et prononciation, vocabulaire thématique, flashcards (français ➔ roumain), quiz, histoires courtes, cours de grammaire et conjugaison interactive.</p>
 </div></header>
 <div class="band"></div>
 
 <nav id="nav">
   <button data-target="alpha" class="active">Alphabet</button>
+  <button data-target="pronunciation">Prononciation</button>
   <button data-target="vocab">Vocabulaire</button>
   <button data-target="flash">Flashcards</button>
   <button data-target="quiz">Quiz</button>
   <button data-target="stories">Histoires A1</button>
   <button data-target="grammar">Grammaire A1-A2</button>
   <button data-target="verbs">Verbes</button>
+  <button data-target="conjugation">Conjugaison ✍️</button>
   <button data-target="prayers">Prières</button>
   <button data-target="history">Histoire</button>
   <button data-target="holidays">Fêtes</button>
@@ -175,6 +300,229 @@ footer{
         <li><b>ă</b> = e muet (comme « le ») ; <b>â</b> et <b>î</b> = même son, entre « i » et « u », gorge serrée</li>
         <li>L'accent tonique n'est pas écrit : il faut l'apprendre avec le mot.</li>
       </ul>
+      <div class="cj-callout" style="margin:1rem 0 0"><span>Pour aller plus loin : accent tonique, diphtongues, -i final « chuchoté », paires minimales et audio 🔊.</span><button type="button" class="action primary" data-go="pronunciation">🔊 Prononciation détaillée</button></div>
+    </div>
+  </section>
+
+  <section id="sec-pronunciation">
+    <h2>Prononciation : avoir un vrai accent roumain</h2>
+    <p class="lead">L'onglet Alphabet donne les sons lettre par lettre ; ici, on travaille les sons réels, l'accent tonique, les diphtongues et le fameux <span class="rc">-i</span> final. Clique sur 🔊 pour écouter (voix roumaine de ton système si elle existe, sinon voix en ligne : connexion internet requise).</p>
+
+    <div class="tip">Convention : la voyelle <span class="st">soulignée</span> est la voyelle accentuée. Les transcriptions [API/IPA] sont volontairement approximatives ; le but est de t'orienter, pas de remplacer l'écoute de vrais locuteurs.</div>
+
+    <div class="gram">
+      <h3>1. Le principe : très phonétique, mais avec des pièges</h3>
+      <p>Le roumain s'écrit presque comme il se prononce : une lettre ≈ un son, et toutes les lettres se prononcent. Les difficultés viennent de quelques sons absents du français et de <b>règles précises</b> (c/g devant e et i, semi-voyelles, -i final).</p>
+      <p><b>Ordre de priorité pour un francophone :</b></p>
+      <ol>
+        <li>â / î /ɨ/ : apprendre la voyelle roumaine</li>
+        <li>ă /ə/ : une vraie voyelle, jamais muette</li>
+        <li>c, g devant e / i, et ch, gh : les 4 règles</li>
+        <li>ș /ʃ/ et ț /ts/ : ne pas les confondre avec s et t</li>
+        <li>eu, au, oi, ea, oa… : des voyelles glissées, pas du français</li>
+        <li>le -i final « chuchoté » (lupi ≠ lup, tu lucrezi ≠ eu lucrez)</li>
+        <li>r roulé, h aspiré, s toujours /s/</li>
+        <li>accent tonique : apprendre chaque mot <i>avec</i> son accent</li>
+      </ol>
+    </div>
+
+    <div class="gram">
+      <h3>2. L'accent tonique</h3>
+      <p>L'accent est <b>libre</b> (il peut tomber sur n'importe quelle syllabe) et <b>jamais écrit</b> dans l'orthographe courante. Il tombe souvent sur l'avant-dernière syllabe, mais pas toujours : <span class="say" data-say="casă">c<span class="st">a</span>să</span> <span class="say" data-say="mâncare">mânc<span class="st">a</span>re</span> <span class="say" data-say="frumos">frum<span class="st">o</span>s</span> <span class="say" data-say="română">român<span class="st">ă</span></span>.</p>
+      <p>Il peut changer le sens : <span class="say" data-say="copii">cop<span class="st">i</span>i</span> (les enfants) ≠ <span class="say" data-say="copii">c<span class="st">o</span>pii</span> (les copies).</p>
+      <div class="tip">Erreur française typique : accentuer par réflexe la dernière syllabe (« mancár » au lieu de mâncáre). En revanche, les voyelles non accentuées restent nettes : on ne les avale pas.</div>
+    </div>
+
+    <div class="gram">
+      <h3>3. Les voyelles</h3>
+      <div class="tbl-scroll"><table class="t">
+        <tr><th>Lettre</th><th>API</th><th>Approximation</th><th>Piège</th></tr>
+        <tr><td class="ro-cell">a</td><td class="ipa">/a/</td><td>a français (« pas »)</td><td>Reste ouvert et net, même non accentué</td></tr>
+        <tr><td class="ro-cell">ă</td><td class="ipa">/ə/</td><td>proche du « e » de « le »</td><td>Jamais muet en fin de mot (§5)</td></tr>
+        <tr><td class="ro-cell">â / î</td><td class="ipa">/ɨ/</td><td>voir §4</td><td>Ni « i », ni « ou », ni « eu »</td></tr>
+        <tr><td class="ro-cell">e</td><td class="ipa">/e/</td><td>é / è (entre « blé » et « père »)</td><td>Toujours prononcé, même en fin de mot : bine</td></tr>
+        <tr><td class="ro-cell">i</td><td class="ipa">/i/</td><td>i (« si »)</td><td>En fin de mot, souvent chuchoté (§9)</td></tr>
+        <tr><td class="ro-cell">o</td><td class="ipa">/o/</td><td>o fermé (« mot », « rose »)</td><td>Pas « on », pas « ou »</td></tr>
+        <tr><td class="ro-cell">u</td><td class="ipa">/u/</td><td>ou (« tout »)</td><td>Le « u » français /y/ n'existe pas en roumain</td></tr>
+      </table></div>
+    </div>
+
+    <div class="gram">
+      <h3>4. Le fameux â / î /ɨ/</h3>
+      <p>Voyelle centrale fermée, langue en arrière et <b>lèvres non arrondies</b>. C'est le son le plus caractéristique du roumain. Les deux lettres notent le même son : <span class="rc">î</span> au début et à la fin d'un mot, <span class="rc">â</span> à l'intérieur.</p>
+      <p><b>Exercice :</b> dis « i », puis « ou », puis cherche un son entre les deux en gardant les lèvres à plat : <span class="ipa">i → ɨ → u</span>. Ou dis « ou » puis relâche les lèvres sans les arrondir.</p>
+      <p>À écouter et répéter :
+        <span class="say" data-say="în">în</span>
+        <span class="say" data-say="pâine">pâine</span>
+        <span class="say" data-say="mâncare">mâncare</span>
+        <span class="say" data-say="câine">câine</span>
+        <span class="say" data-say="gând">gând</span>
+        <span class="say" data-say="cuvânt">cuvânt</span>
+        <span class="say" data-say="sânge">sânge</span>
+        <span class="say" data-say="român">român</span>
+      </p>
+      <div class="tip">Les francophones le remplacent souvent par /ɛ̃/, /y/, /ø/ ou /i/ : cela donne immédiatement un accent étranger.</div>
+    </div>
+
+    <div class="gram">
+      <h3>5. ă /ə/ : une voyelle qu'on entend</h3>
+      <p>En français, le « e » final est muet. Le <span class="rc">ă</span> roumain, lui, est une vraie voyelle brève, même en fin de mot : <span class="say" data-say="bună">b<span class="st">u</span>nă</span> se dit [ˈbunə], pas « bun ».</p>
+      <p>À écouter et répéter :
+        <span class="say" data-say="casă">casă</span>
+        <span class="say" data-say="mamă">mamă</span>
+        <span class="say" data-say="fată">fată</span>
+        <span class="say" data-say="țară">țară</span>
+        <span class="say" data-say="limbă">limbă</span>
+        <span class="say" data-say="apă">apă</span>
+        <span class="say" data-say="Nășica mea">Nășica mea</span>
+      </p>
+      <div class="tip">a / ă change le sens ou la grammaire : <span class="rc">fata / fată</span> (la fille / une fille), <span class="rc">mâncam / mâncăm</span> (nous mangions / nous mangeons).</div>
+    </div>
+
+    <div class="gram">
+      <h3>6. Semi-voyelles et diphtongues</h3>
+      <div class="tbl-scroll"><table class="t">
+        <tr><th></th><th>Groupe</th><th>API</th><th>Exemple</th><th>À surveiller</th></tr>
+        <tr><td><span class="say" data-say="seară"></span></td><td class="ro-cell">ea</td><td class="ipa">[e̯a]</td><td class="ro-cell">seară (soir)</td><td>Une seule syllabe : glissement rapide e → a</td></tr>
+        <tr><td><span class="say" data-say="noapte"></span></td><td class="ro-cell">oa</td><td class="ipa">[o̯a]</td><td class="ro-cell">noapte (nuit)</td><td>Même principe : o → a</td></tr>
+        <tr><td><span class="say" data-say="iarnă"></span></td><td class="ro-cell">ia</td><td class="ipa">[ja]</td><td class="ro-cell">iarnă (hiver)</td><td>« y » + a</td></tr>
+        <tr><td><span class="say" data-say="ieri"></span></td><td class="ro-cell">ie</td><td class="ipa">[je]</td><td class="ro-cell">ieri (hier)</td><td>« y » + é</td></tr>
+        <tr><td><span class="say" data-say="iubire"></span></td><td class="ro-cell">iu</td><td class="ipa">[ju]</td><td class="ro-cell">iubire (amour)</td><td>« y » + ou</td></tr>
+        <tr><td><span class="say" data-say="ziua"></span></td><td class="ro-cell">ua</td><td class="ipa">[wa]</td><td class="ro-cell">ziua (le jour)</td><td>« oua » rapide</td></tr>
+        <tr><td><span class="say" data-say="mai"></span></td><td class="ro-cell">ai</td><td class="ipa">[aj]</td><td class="ro-cell">mai (plus, mai)</td><td>« aï »</td></tr>
+        <tr><td><span class="say" data-say="ei"></span></td><td class="ro-cell">ei</td><td class="ipa">[ej]</td><td class="ro-cell">ei (ils)</td><td>« eï »</td></tr>
+        <tr><td><span class="say" data-say="noi"></span></td><td class="ro-cell">oi</td><td class="ipa">[oj]</td><td class="ro-cell">noi (nous)</td><td>« oï », pas « oua »</td></tr>
+        <tr><td><span class="say" data-say="lui"></span></td><td class="ro-cell">ui</td><td class="ipa">[uj]</td><td class="ro-cell">lui (à lui)</td><td>« ouï »</td></tr>
+        <tr><td><span class="say" data-say="au"></span></td><td class="ro-cell">au</td><td class="ipa">[aw]</td><td class="ro-cell">au (ils ont)</td><td>a + w, pas « o »</td></tr>
+        <tr><td><span class="say" data-say="eu"></span></td><td class="ro-cell">eu</td><td class="ipa">[ew]</td><td class="ro-cell">eu (je)</td><td>é + w : pas le « eu » français /ø/</td></tr>
+        <tr><td><span class="say" data-say="rău"></span></td><td class="ro-cell">ău</td><td class="ipa">[əw]</td><td class="ro-cell">rău (mauvais)</td><td>ă + w</td></tr>
+      </table></div>
+    </div>
+
+    <div class="gram">
+      <h3>7. Les consonnes</h3>
+      <div class="tbl-scroll"><table class="t">
+        <tr><th>Lettre</th><th>API</th><th>Comme…</th><th>Piège</th></tr>
+        <tr><td class="ro-cell">c</td><td class="ipa">/k/</td><td>« cas »</td><td>Devant e / i : /tʃ/ (§8)</td></tr>
+        <tr><td class="ro-cell">g</td><td class="ipa">/ɡ/</td><td>« gare »</td><td>Devant e / i : /dʒ/ (§8)</td></tr>
+        <tr><td class="ro-cell">ș</td><td class="ipa">/ʃ/</td><td>« chat »</td><td>≠ s : <span class="say" data-say="cos">cos</span> / <span class="say" data-say="coș">coș</span></td></tr>
+        <tr><td class="ro-cell">ț</td><td class="ipa">/ts/</td><td>« tsar »</td><td>Un seul son, ≠ t : <span class="say" data-say="tine">tine</span> / <span class="say" data-say="ține">ține</span></td></tr>
+        <tr><td class="ro-cell">j</td><td class="ipa">/ʒ/</td><td>« jour »</td><td>Pas le j anglais de <i>job</i></td></tr>
+        <tr><td class="ro-cell">h</td><td class="ipa">/h/</td><td>h expiré (comme en anglais)</td><td>Ne pas l'omettre : <span class="say" data-say="hai">hai</span> ≠ <span class="say" data-say="ai">ai</span></td></tr>
+        <tr><td class="ro-cell">r</td><td class="ipa">/r/</td><td>r roulé, pointe de la langue</td><td>Pas le r du fond de la gorge</td></tr>
+        <tr><td class="ro-cell">s</td><td class="ipa">/s/</td><td>« sac »</td><td>Toujours /s/, même entre voyelles : casă, jamais « caza »</td></tr>
+        <tr><td class="ro-cell">z</td><td class="ipa">/z/</td><td>« zèbre »</td><td>—</td></tr>
+        <tr><td class="ro-cell">x</td><td class="ipa">/ks/ ou /ɡz/</td><td>« taxi » / « examen »</td><td>Comme en français</td></tr>
+        <tr><td class="ro-cell">v</td><td class="ipa">/v/</td><td>« vin »</td><td>Jamais /w/</td></tr>
+      </table></div>
+      <div class="tip">k, w et y n'apparaissent que dans des mots empruntés (<span class="rc">kilogram, web, yoga</span>).</div>
+    </div>
+
+    <div class="gram">
+      <h3>8. c et g : les 4 règles (+ la voyelle muette)</h3>
+      <div class="tbl-scroll"><table class="t">
+        <tr><th></th><th>Graphie</th><th>Son</th><th>Exemple</th><th>Sens</th></tr>
+        <tr><td><span class="say" data-say="cine"></span></td><td class="ro-cell">ce, ci</td><td class="ipa">[tʃe], [tʃi]</td><td class="ro-cell">cine [ˈtʃine]</td><td>qui</td></tr>
+        <tr><td><span class="say" data-say="cheie"></span></td><td class="ro-cell">che, chi</td><td class="ipa">[ke], [ki]</td><td class="ro-cell">cheie [ˈkeje]</td><td>clé</td></tr>
+        <tr><td><span class="say" data-say="gem"></span></td><td class="ro-cell">ge, gi</td><td class="ipa">[dʒe], [dʒi]</td><td class="ro-cell">gem [dʒem]</td><td>confiture</td></tr>
+        <tr><td><span class="say" data-say="ghete"></span></td><td class="ro-cell">ghe, ghi</td><td class="ipa">[ɡe], [ɡi]</td><td class="ro-cell">ghete [ˈɡete]</td><td>bottes</td></tr>
+      </table></div>
+      <p><b>Devant a, o, u</b>, le e ou le i sert seulement de signe : il adoucit la consonne et ne s'entend presque pas.</p>
+      <div class="tbl-scroll"><table class="t">
+        <tr><th></th><th>Graphie</th><th>Son</th><th>Exemple</th><th>Sens</th></tr>
+        <tr><td><span class="say" data-say="ceas"></span></td><td class="ro-cell">cea</td><td class="ipa">[tʃa]</td><td class="ro-cell">ceas [tʃas]</td><td>montre, horloge</td></tr>
+        <tr><td><span class="say" data-say="ciorbă"></span></td><td class="ro-cell">cio</td><td class="ipa">[tʃo]</td><td class="ro-cell">ciorbă [ˈtʃorbə]</td><td>soupe aigre</td></tr>
+        <tr><td><span class="say" data-say="geam"></span></td><td class="ro-cell">gea</td><td class="ipa">[dʒa]</td><td class="ro-cell">geam [dʒam]</td><td>fenêtre</td></tr>
+      </table></div>
+      <div class="tip">Pour garder le son dur devant e / i, on intercale un <b>h</b> : <span class="rc">che, chi, ghe, ghi</span>. Le ch roumain n'a rien à voir avec le ch français : <span class="say" data-say="ochi">ochi</span> = [okʲ], pas « oshi ».</div>
+    </div>
+
+    <div class="gram">
+      <h3>9. Le -i final « chuchoté »</h3>
+      <p>Un <b>-i</b> final non accentué, après une consonne, n'est pas une vraie voyelle : il « mouille » légèrement la consonne (une palatalisation notée [ʲ]). Ce détail distingue le singulier du pluriel et la 1re personne de la 2e.</p>
+      <div class="tbl-scroll"><table class="t">
+        <tr><th></th><th>Sans -i</th><th>Avec -i</th><th>Sens</th></tr>
+        <tr><td><span class="say" data-say="lup lupi"></span></td><td class="ro-cell">lup <span class="ipa">[lup]</span></td><td class="ro-cell">lupi <span class="ipa">[lupʲ]</span></td><td>loup / loups</td></tr>
+        <tr><td><span class="say" data-say="elev elevi"></span></td><td class="ro-cell">elev <span class="ipa">[eˈlev]</span></td><td class="ro-cell">elevi <span class="ipa">[eˈlevʲ]</span></td><td>élève / élèves</td></tr>
+        <tr><td><span class="say" data-say="student studenți"></span></td><td class="ro-cell">student <span class="ipa">[stuˈdent]</span></td><td class="ro-cell">studenți <span class="ipa">[stuˈdentsʲ]</span></td><td>étudiant / étudiants</td></tr>
+        <tr><td><span class="say" data-say="eu lucrez, tu lucrezi"></span></td><td class="ro-cell">eu lucrez <span class="ipa">[luˈkrez]</span></td><td class="ro-cell">tu lucrezi <span class="ipa">[luˈkrezʲ]</span></td><td>je travaille / tu travailles</td></tr>
+        <tr><td><span class="say" data-say="eu merg, tu mergi"></span></td><td class="ro-cell">eu merg <span class="ipa">[merɡ]</span></td><td class="ro-cell">tu mergi <span class="ipa">[merdʒ]</span></td><td>je vais / tu vas</td></tr>
+      </table></div>
+      <ul>
+        <li>Après <b>c</b> ou <b>g</b>, le -i se voit surtout dans la consonne : <span class="say" data-say="fac">fac</span> [fak] ≠ <span class="say" data-say="faci">faci</span> [fatʃ].</li>
+        <li>Un <b>-ii</b> final se dit [ij] : <span class="say" data-say="copii">copii</span> [koˈpij].</li>
+        <li>Quand le -i est accentué, il est bien entier : <span class="say" data-say="vii">vii</span> (tu viens).</li>
+      </ul>
+    </div>
+
+    <div class="gram">
+      <h3>10. Rythme et enchaînement</h3>
+      <ul>
+        <li>Pas de <i>e</i> muet français : le -e final se prononce. <span class="say" data-say="bine">bine</span> [ˈbine], <span class="say" data-say="mare">mare</span> [ˈmare].</li>
+        <li>Les voyelles non accentuées restent nettes : ne les avale pas.</li>
+        <li>Les groupes de consonnes sont normaux : <span class="say" data-say="mulțumesc">mulțumesc</span>, <span class="say" data-say="sfânt">sfânt</span>, <span class="say" data-say="scriu">scriu</span>, <span class="say" data-say="strada">strada</span>.</li>
+        <li>Le r se roule : <span class="say" data-say="rău">rău</span>, <span class="say" data-say="România">România</span>.</li>
+        <li>Le rythme est plus proche du français que de l'anglais : syllabes assez régulières, pas de grosse réduction.</li>
+      </ul>
+    </div>
+
+    <div class="gram">
+      <h3>11. Paires minimales à s'entraîner à distinguer</h3>
+      <div class="tbl-scroll"><table class="t">
+        <tr><th>Contraste</th><th>Paire</th><th>Sens</th></tr>
+        <tr><td>a / ă</td><td class="ro-cell"><span class="say" data-say="fata">fata</span> / <span class="say" data-say="fată">fată</span></td><td>la fille / une fille</td></tr>
+        <tr><td>ă / â</td><td class="ro-cell"><span class="say" data-say="văd">văd</span> / <span class="say" data-say="vând">vând</span></td><td>je vois / je vends</td></tr>
+        <tr><td>s / ș</td><td class="ro-cell"><span class="say" data-say="cos">cos</span> / <span class="say" data-say="coș">coș</span></td><td>je couds / panier</td></tr>
+        <tr><td>t / ț</td><td class="ro-cell"><span class="say" data-say="tine">tine</span> / <span class="say" data-say="ține">ține</span></td><td>toi / il tient</td></tr>
+        <tr><td>ce / che</td><td class="ro-cell"><span class="say" data-say="cel">cel</span> / <span class="say" data-say="chel">chel</span></td><td>celui / chauve</td></tr>
+        <tr><td>h / ∅</td><td class="ro-cell"><span class="say" data-say="hai">hai</span> / <span class="say" data-say="ai">ai</span></td><td>allez ! / tu as</td></tr>
+        <tr><td>r / l</td><td class="ro-cell"><span class="say" data-say="rac">rac</span> / <span class="say" data-say="lac">lac</span></td><td>crabe / lac</td></tr>
+        <tr><td>-i final</td><td class="ro-cell"><span class="say" data-say="lup">lup</span> / <span class="say" data-say="lupi">lupi</span></td><td>loup / loups</td></tr>
+      </table></div>
+    </div>
+
+    <div class="gram">
+      <h3>12. 26 mots fréquents avec accent et prononciation</h3>
+      <div class="tbl-scroll"><table class="t">
+        <tr><th></th><th>Mot</th><th>API</th><th>Sens</th><th>À surveiller</th></tr>
+        <tr><td><span class="say" data-say="bună ziua"></span></td><td class="ro-cell">b<span class="st">u</span>nă z<span class="st">i</span>ua</td><td class="ipa">[ˈbunə ˈziwa]</td><td>bonjour</td><td>ă final audible</td></tr>
+        <tr><td><span class="say" data-say="mulțumesc"></span></td><td class="ro-cell">mulț<span class="st">u</span>mesc</td><td class="ipa">[mulˈtsumesk]</td><td>merci</td><td>ț = ts, c final = k</td></tr>
+        <tr><td><span class="say" data-say="vă rog"></span></td><td class="ro-cell">vă r<span class="st">o</span>g</td><td class="ipa">[və ˈroɡ]</td><td>s'il vous plaît</td><td>ă, r roulé</td></tr>
+        <tr><td><span class="say" data-say="bine"></span></td><td class="ro-cell">b<span class="st">i</span>ne</td><td class="ipa">[ˈbine]</td><td>bien</td><td>e final prononcé</td></tr>
+        <tr><td><span class="say" data-say="salut"></span></td><td class="ro-cell">sal<span class="st">u</span>t</td><td class="ipa">[saˈlut]</td><td>salut</td><td>u = ou</td></tr>
+        <tr><td><span class="say" data-say="la revedere"></span></td><td class="ro-cell">la reved<span class="st">e</span>re</td><td class="ipa">[la reveˈdere]</td><td>au revoir</td><td>accent sur -de-</td></tr>
+        <tr><td><span class="say" data-say="România"></span></td><td class="ro-cell">Român<span class="st">i</span>a</td><td class="ipa">[romɨˈni.a]</td><td>Roumanie</td><td>â = /ɨ/</td></tr>
+        <tr><td><span class="say" data-say="română"></span></td><td class="ro-cell">român<span class="st">ă</span></td><td class="ipa">[romɨˈnə]</td><td>roumaine (langue)</td><td>accent final</td></tr>
+        <tr><td><span class="say" data-say="casă"></span></td><td class="ro-cell">c<span class="st">a</span>să</td><td class="ipa">[ˈkasə]</td><td>maison</td><td>s = /s/, pas /z/</td></tr>
+        <tr><td><span class="say" data-say="apă"></span></td><td class="ro-cell"><span class="st">a</span>pă</td><td class="ipa">[ˈapə]</td><td>eau</td><td>ă final audible</td></tr>
+        <tr><td><span class="say" data-say="pâine"></span></td><td class="ro-cell">p<span class="st">â</span>ine</td><td class="ipa">[ˈpɨjne]</td><td>pain</td><td>2 syllabes : pâi-ne</td></tr>
+        <tr><td><span class="say" data-say="mâncare"></span></td><td class="ro-cell">mânc<span class="st">a</span>re</td><td class="ipa">[mɨnˈkare]</td><td>nourriture</td><td>accent sur -ca-</td></tr>
+        <tr><td><span class="say" data-say="cinci"></span></td><td class="ro-cell">c<span class="st">i</span>nci</td><td class="ipa">[tʃintʃ]</td><td>cinq</td><td>ci = tch, -i final muet</td></tr>
+        <tr><td><span class="say" data-say="ce faci"></span></td><td class="ro-cell">ce f<span class="st">a</span>ci</td><td class="ipa">[tʃe fatʃ]</td><td>ça va ? (que fais-tu ?)</td><td>ce = tché, ci = tch</td></tr>
+        <tr><td><span class="say" data-say="ceai"></span></td><td class="ro-cell">ce<span class="st">a</span>i</td><td class="ipa">[tʃaj]</td><td>thé</td><td>une seule syllabe</td></tr>
+        <tr><td><span class="say" data-say="ochi"></span></td><td class="ro-cell"><span class="st">o</span>chi</td><td class="ipa">[okʲ]</td><td>œil, yeux</td><td>ch = k</td></tr>
+        <tr><td><span class="say" data-say="șase"></span></td><td class="ro-cell">ș<span class="st">a</span>se</td><td class="ipa">[ˈʃase]</td><td>six</td><td>ș = ch, s = /s/</td></tr>
+        <tr><td><span class="say" data-say="țară"></span></td><td class="ro-cell">ț<span class="st">a</span>ră</td><td class="ipa">[ˈtsarə]</td><td>pays</td><td>ț = ts</td></tr>
+        <tr><td><span class="say" data-say="frumos"></span></td><td class="ro-cell">frum<span class="st">o</span>s</td><td class="ipa">[fruˈmos]</td><td>beau</td><td>accent final</td></tr>
+        <tr><td><span class="say" data-say="prieten"></span></td><td class="ro-cell">pri<span class="st">e</span>ten</td><td class="ipa">[ˈprjeten]</td><td>ami</td><td>ie = diphtongue</td></tr>
+        <tr><td><span class="say" data-say="noapte"></span></td><td class="ro-cell">no<span class="st">a</span>pte</td><td class="ipa">[ˈno̯apte]</td><td>nuit</td><td>oa glissé</td></tr>
+        <tr><td><span class="say" data-say="vorbesc"></span></td><td class="ro-cell">vorb<span class="st">e</span>sc</td><td class="ipa">[vorˈbesk]</td><td>je parle</td><td>sc = sk</td></tr>
+        <tr><td><span class="say" data-say="înțeleg"></span></td><td class="ro-cell">înțel<span class="st">e</span>g</td><td class="ipa">[ɨntseˈleɡ]</td><td>je comprends</td><td>î = /ɨ/, ț = ts</td></tr>
+        <tr><td><span class="say" data-say="copii"></span></td><td class="ro-cell">cop<span class="st">i</span>i</td><td class="ipa">[koˈpij]</td><td>enfants</td><td>-ii = [ij]</td></tr>
+        <tr><td><span class="say" data-say="rău"></span></td><td class="ro-cell">r<span class="st">ă</span>u</td><td class="ipa">[rəw]</td><td>mal, mauvais</td><td>ău = [əw]</td></tr>
+        <tr><td><span class="say" data-say="ghid"></span></td><td class="ro-cell">gh<span class="st">i</span>d</td><td class="ipa">[ɡid]</td><td>guide</td><td>gh = g dur</td></tr>
+      </table></div>
+    </div>
+
+    <div class="gram">
+      <h3>13. Méthode d'entraînement en 4 passes</h3>
+      <ol>
+        <li><b>Lecture lente</b> : chaque son bien contrôlé (ă, â, ș, ț, c/g).</li>
+        <li><b>Vitesse normale</b> : tu gardes l'accent tonique.</li>
+        <li><b>Parole naturelle</b> : tu enchaînes sans hésiter et tu chuchotes le -i final.</li>
+        <li><b>Imitation</b> : tu écoutes un natif et tu copies le rythme et la mélodie, pas seulement les sons. C'est l'étape qui manque le plus souvent.</li>
+      </ol>
+      <div class="tip">Astuce : enregistre-toi, réécoute, compare avec la voix d'un locuteur natif, une phrase à la fois.</div>
     </div>
   </section>
 
@@ -207,6 +555,7 @@ footer{
   <section id="sec-quiz">
     <h2>Quiz</h2>
     <p class="lead">10 questions au hasard : retrouve le mot roumain.</p>
+    <div class="cj-callout"><span>Ce quiz teste le <b>vocabulaire</b>. Pour t'entraîner à <b>conjuguer</b>, utilise le quiz dédié.</span><button type="button" class="action primary" data-go-conj="train">📝 Quiz de conjugaison</button></div>
     <div class="chips" id="quiz-chips"></div>
     <div class="quiz-box" id="quiz-box"></div>
   </section>
@@ -227,13 +576,69 @@ footer{
     <h2>Progression</h2>
     <p class="lead">Mots marqués « je connais » et meilleurs scores de quiz, par thème.</p>
     <div id="prog-list"></div>
+    <h3 style="margin-top:1.6rem;">Conjugaison</h3>
+    <div id="progress-conj"></div>
     <button class="action primary" id="reset-all" style="margin-top:1rem">Tout réinitialiser</button>
   </section>
 
   <section id="sec-verbs">
     <h2>Verbes et tableaux de conjugaison</h2>
     <p class="lead">Les verbes indispensables du roumain : présent, passé composé (« am / ai / a… » + participe) et futur (« voi / vei / va… » + infinitif). À l'oral, le futur se dit souvent <span class="ro-cell">o să</span> + subjonctif : <span class="ro-cell">o să merg</span>.</p>
+    <div class="cj-callout"><span>Pour t'entraîner à <b>conjuguer</b> (fiches avec audio, imparfait, subjonctif, impératif, exercices variés), utilise l'onglet Conjugaison.</span><button type="button" class="action primary" data-go-conj="train">📝 S'entraîner</button></div>
     <div id="verb-tables"></div>
+  </section>
+
+  <section id="sec-conjugation">
+    <h2>Conjugaison</h2>
+    <p class="lead">Consulte les fiches de 17 verbes essentiels (présent, passé composé, futur, imparfait, subjonctif, impératif), puis entraîne-toi avec des exercices variés : choix, saisie, reconnaissance, phrases à trous et tableaux à remplir.</p>
+    <div class="cj-tabs" role="tablist">
+      <button type="button" class="cj-tab active" data-cj="fiches" role="tab">📖 Fiches</button>
+      <button type="button" class="cj-tab" data-cj="train" role="tab">📝 Entraînement</button>
+    </div>
+
+    <div id="cj-pane-fiches">
+      <div id="cj-vchips"></div>
+      <div class="cj-card" id="cj-fiche" style="margin-top:1rem"></div>
+
+      <div class="cj-card">
+        <h3>Les terminaisons du présent</h3>
+        <div class="tbl-scroll">
+        <table class="t">
+          <tr><th></th><th>-a + -ez</th><th>-i + -esc</th><th>-e</th></tr>
+          <tr><td>eu</td><td class="ro-cell">-ez</td><td class="ro-cell">-esc</td><td class="ro-cell">— (radical)</td></tr>
+          <tr><td>tu</td><td class="ro-cell">-ezi</td><td class="ro-cell">-ești</td><td class="ro-cell">-i</td></tr>
+          <tr><td>el / ea</td><td class="ro-cell">-ează</td><td class="ro-cell">-ește</td><td class="ro-cell">-e</td></tr>
+          <tr><td>noi</td><td class="ro-cell">-ăm</td><td class="ro-cell">-im</td><td class="ro-cell">-em</td></tr>
+          <tr><td>voi</td><td class="ro-cell">-ați</td><td class="ro-cell">-iți</td><td class="ro-cell">-eți</td></tr>
+          <tr><td>ei / ele</td><td class="ro-cell">-ează</td><td class="ro-cell">-esc</td><td class="ro-cell">— (radical)</td></tr>
+          <tr><td><i>Exemple</i></td><td class="ro-cell">lucrez</td><td class="ro-cell">locuiesc</td><td class="ro-cell">merg</td></tr>
+        </table>
+        </div>
+        <div class="tip">Plusieurs verbes en -a n'ont pas de suffixe -ez (cânt, cânți, cântă…) et certains verbes en -i non plus (vin, vii, vine…) : d'où l'intérêt des fiches.</div>
+      </div>
+
+      <div class="cj-card">
+        <h3>Construire les autres temps</h3>
+        <div class="tbl-scroll">
+        <table class="t">
+          <tr><th>Temps</th><th>Formation</th><th>Exemple</th></tr>
+          <tr><td><b>Passé composé</b></td><td class="ro-cell">am / ai / a / am / ați / au + participe</td><td class="ro-cell">Am lucrat ieri.</td></tr>
+          <tr><td><b>Futur</b></td><td class="ro-cell">voi / vei / va / vom / veți / vor + infinitif</td><td class="ro-cell">Voi lucra mâine.</td></tr>
+          <tr><td><b>Futur parlé</b></td><td class="ro-cell">o să + subjonctif</td><td class="ro-cell">O să lucrez mâine.</td></tr>
+          <tr><td><b>Imparfait</b></td><td class="ro-cell">radical + -am, -ai, -a, -am, -ați, -au (ou -eam, -eai, -ea…)</td><td class="ro-cell">Citeam mult.</td></tr>
+          <tr><td><b>Subjonctif</b></td><td class="ro-cell">să + présent (3e personne : să lucreze, să meargă)</td><td class="ro-cell">Vreau să merg.</td></tr>
+          <tr><td><b>Négation</b></td><td class="ro-cell">nu + verbe</td><td class="ro-cell">Nu vorbesc franceza.</td></tr>
+          <tr><td><b>Impératif (tu)</b></td><td class="ro-cell">3e personne du présent</td><td class="ro-cell">Citește!</td></tr>
+          <tr><td><b>Impératif (voi)</b></td><td class="ro-cell">2e personne du pluriel</td><td class="ro-cell">Citiți!</td></tr>
+          <tr><td><b>Impératif négatif</b></td><td class="ro-cell">nu + infinitif (tu)</td><td class="ro-cell">Nu citi!</td></tr>
+        </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="cj-pane-train" style="display:none;">
+      <div class="cj-stage" id="cj-stage"></div>
+    </div>
   </section>
 
   <section id="sec-prayers">
@@ -4045,6 +4450,898 @@ function renderCultureProgress(){
     apply(next);
     try{ localStorage.setItem('bg_theme', next); }catch(e){}
   });
+})();
+</script>
+<script>
+/* ---------------- PRONONCIATION : lecture audio ---------------- */
+(function(){
+  const synth = window.speechSynthesis;
+  let roVoice = null;
+  function pickVoice(){
+    if(!synth) return;
+    roVoice = synth.getVoices().find(x=>/^ro/i.test(x.lang)) || null;
+  }
+  if(synth){ pickVoice(); synth.onvoiceschanged = pickVoice; }
+
+  const toast = document.createElement("div");
+  toast.style.cssText = "position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#14294B;color:#fff;padding:.6rem 1rem;border-radius:8px;font-size:.9rem;z-index:9999;display:none;max-width:90%;text-align:center";
+  document.body.appendChild(toast);
+  let toastT;
+  function notify(msg){ toast.textContent = msg; toast.style.display = "block"; clearTimeout(toastT); toastT = setTimeout(()=>{ toast.style.display = "none"; }, 4000); }
+
+  let audio = null;
+  function playOnline(text, el){
+    // Repli : voix roumaine en ligne (nécessite une connexion internet)
+    if(audio){ audio.pause(); }
+    audio = new Audio("https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ro&q=" + encodeURIComponent(text));
+    el.classList.add("playing");
+    audio.onended = ()=>el.classList.remove("playing");
+    audio.onerror = ()=>{ el.classList.remove("playing"); notify("Audio indisponible : installe une voix roumaine dans ton système ou vérifie ta connexion."); };
+    audio.play().catch(()=>{ el.classList.remove("playing"); notify("Audio bloqué ou indisponible (connexion ?)."); });
+  }
+  function speak(el){
+    const text = el.dataset.say;
+    if(!text) return;
+    if(!roVoice) pickVoice();
+    if(synth && roVoice){
+      synth.cancel();
+      setTimeout(()=>{
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = roVoice.lang; u.voice = roVoice; u.rate = 0.8;
+        u.onstart = ()=>el.classList.add("playing");
+        u.onend = u.onerror = ()=>el.classList.remove("playing");
+        synth.speak(u);
+      }, 60);
+    } else {
+      playOnline(text, el);
+    }
+  }
+  document.addEventListener("click", e=>{
+    const el = e.target.closest && e.target.closest("[data-say]");
+    if(el) speak(el);
+  });
+  document.addEventListener("keydown", e=>{
+    if((e.key==="Enter" || e.key===" ") && e.target.matches && e.target.matches("[data-say]")){ e.preventDefault(); speak(e.target); }
+  });
+  document.querySelectorAll(".say").forEach(el=>{
+    el.setAttribute("role","button"); el.setAttribute("tabindex","0");
+    el.setAttribute("aria-label","Écouter : " + (el.dataset.say||""));
+  });
+})();
+</script>
+<script>
+/* ================= CONJUGAISON : données + fiches + entraînement ================= */
+(function(){
+  "use strict";
+
+  /* ---------- Données ---------- */
+  const PERS = [
+    {ro:"eu", fr:"je", short:"eu"},
+    {ro:"tu", fr:"tu", short:"tu"},
+    {ro:"el / ea", fr:"il / elle", short:"el/ea"},
+    {ro:"noi", fr:"nous", short:"noi"},
+    {ro:"voi", fr:"vous", short:"voi"},
+    {ro:"ei / ele", fr:"ils / elles", short:"ei/ele"}
+  ];
+  const PERS_IMP = [
+    {ro:"tu", fr:"tu", short:"tu"},
+    {ro:"voi", fr:"vous", short:"voi"}
+  ];
+  const TENSES = {
+    pres:{label:"Présent", low:"présent"},
+    pc  :{label:"Passé composé", low:"passé composé"},
+    fut :{label:"Futur", low:"futur"},
+    impf:{label:"Imparfait", low:"imparfait"},
+    subj:{label:"Subjonctif", low:"subjonctif"},
+    imp :{label:"Impératif", low:"impératif"}
+  };
+  const T_ORDER = ["pres","pc","fut","impf","subj","imp"];
+  const T_TABLE = ["pres","pc","fut","impf","subj"];
+  const GROUPS = {
+    a  :{label:"1re conjugaison (-a)"},
+    ea :{label:"2e conjugaison (-ea)"},
+    e  :{label:"3e conjugaison (-e)"},
+    i  :{label:"4e conjugaison (-i)"},
+    irr:{label:"Irréguliers"}
+  };
+  const AUX_PC  = ["am","ai","a","am","ați","au"];
+  const AUX_FUT = ["voi","vei","va","vom","veți","vor"];
+
+  /* pres / impf / sj (subjonctif sans « să ») / imp (tu, voi) — pc, fut et subj sont construits ensuite */
+  const RAW = [
+    {id:"fi", ro:"a fi", inf:"fi", part:"fost", fr:"être", grp:"irr",
+      pres:["sunt","ești","este","suntem","sunteți","sunt"],
+      impf:["eram","erai","era","eram","erați","erau"],
+      sj:["fiu","fii","fie","fim","fiți","fie"],
+      imp:["fii","fiți"],
+      alt:{"pres:2":["e"]},
+      tip:"« a fi » est le verbe le plus irrégulier. « sunt » sert pour eu ET ei/ele. À la 3e personne, « este » a une forme courte : « e » (El e francez)."},
+    {id:"avea", ro:"a avea", inf:"avea", part:"avut", fr:"avoir", grp:"irr",
+      pres:["am","ai","are","avem","aveți","au"],
+      impf:["aveam","aveai","avea","aveam","aveați","aveau"],
+      sj:["am","ai","aibă","avem","aveți","aibă"],
+      imp:["ai","aveți"],
+      tip:"« a avea » sert aussi d'auxiliaire du passé composé (am făcut). Subjonctif irrégulier à la 3e personne : să aibă."},
+    {id:"vrea", ro:"a vrea", inf:"vrea", part:"vrut", fr:"vouloir", grp:"irr",
+      pres:["vreau","vrei","vrea","vrem","vreți","vor"],
+      impf:["voiam","voiai","voia","voiam","voiați","voiau"],
+      sj:["vreau","vrei","vrea","vrem","vreți","vrea"],
+      tip:"Formes irrégulières : vreau, vrei, vrea, vrem, vreți, vor. L'imparfait change de radical (voiam). Souvent suivi de « să » : Vreau să merg."},
+    {id:"sti", ro:"a ști", inf:"ști", part:"știut", fr:"savoir", grp:"irr",
+      pres:["știu","știi","știe","știm","știți","știu"],
+      impf:["știam","știai","știa","știam","știați","știau"],
+      sj:["știu","știi","știe","știm","știți","știe"],
+      tip:"« a ști » = savoir (une information). Pour connaître une personne ou un lieu, on dit « a cunoaște »."},
+    {id:"da", ro:"a da", inf:"da", part:"dat", fr:"donner", grp:"irr",
+      pres:["dau","dai","dă","dăm","dați","dau"],
+      impf:["dădeam","dădeai","dădea","dădeam","dădeați","dădeau"],
+      sj:["dau","dai","dea","dăm","dați","dea"],
+      imp:["dă","dați"],
+      tip:"Verbe court : dau, dai, dă, dăm, dați, dau. Subjonctif à la 3e personne : să dea."},
+    {id:"lucra", ro:"a lucra", inf:"lucra", part:"lucrat", fr:"travailler", grp:"a",
+      pres:["lucrez","lucrezi","lucrează","lucrăm","lucrați","lucrează"],
+      impf:["lucram","lucrai","lucra","lucram","lucrați","lucrau"],
+      sj:["lucrez","lucrezi","lucreze","lucrăm","lucrați","lucreze"],
+      imp:["lucrează","lucrați"],
+      tip:"Suffixe -ez : lucrez, lucrezi, lucrează… Attention : lucrăm (présent, nous travaillons) ≠ lucram (imparfait, nous travaillions)."},
+    {id:"manca", ro:"a mânca", inf:"mânca", part:"mâncat", fr:"manger", grp:"a",
+      pres:["mănânc","mănânci","mănâncă","mâncăm","mâncați","mănâncă"],
+      impf:["mâncam","mâncai","mânca","mâncam","mâncați","mâncau"],
+      sj:["mănânc","mănânci","mănânce","mâncăm","mâncați","mănânce"],
+      imp:["mănâncă","mâncați"],
+      tip:"Alternance â → ă quand l'accent tombe sur le radical : mănânc, mănânci, mănâncă… mais mâncăm, mâncați."},
+    {id:"invata", ro:"a învăța", inf:"învăța", part:"învățat", fr:"apprendre, étudier", grp:"a",
+      pres:["învăț","înveți","învață","învățăm","învățați","învață"],
+      impf:["învățam","învățai","învăța","învățam","învățați","învățau"],
+      sj:["învăț","înveți","învețe","învățăm","învățați","învețe"],
+      imp:["învață","învățați"],
+      tip:"Alternance ă → e : învăț, înveți, învață, mais învățăm. Au subjonctif : să învețe."},
+    {id:"putea", ro:"a putea", inf:"putea", part:"putut", fr:"pouvoir", grp:"ea",
+      pres:["pot","poți","poate","putem","puteți","pot"],
+      impf:["puteam","puteai","putea","puteam","puteați","puteau"],
+      sj:["pot","poți","poată","putem","puteți","poată"],
+      tip:"Alternance u → o quand l'accent tombe sur le radical : pot, poți, poate. Souvent suivi de « să » : Pot să vin. Pas d'impératif."},
+    {id:"bea", ro:"a bea", inf:"bea", part:"băut", fr:"boire", grp:"ea",
+      pres:["beau","bei","bea","bem","beți","beau"],
+      impf:["beam","beai","bea","beam","beați","beau"],
+      sj:["beau","bei","bea","bem","beți","bea"],
+      imp:["bea","beți"],
+      tip:"Verbe court. Participe irrégulier : băut. À la 3e personne, présent et subjonctif ont la même forme : bea."},
+    {id:"face", ro:"a face", inf:"face", part:"făcut", fr:"faire", grp:"e",
+      pres:["fac","faci","face","facem","faceți","fac"],
+      impf:["făceam","făceai","făcea","făceam","făceați","făceau"],
+      sj:["fac","faci","facă","facem","faceți","facă"],
+      imp:["fă","faceți"],
+      tip:"Impératif court : fă (tu). Subjonctif à la 3e personne : să facă. Question de base : Ce faci ? (Que fais-tu ?)"},
+    {id:"merge", ro:"a merge", inf:"merge", part:"mers", fr:"aller, marcher", grp:"e",
+      pres:["merg","mergi","merge","mergem","mergeți","merg"],
+      impf:["mergeam","mergeai","mergea","mergeam","mergeați","mergeau"],
+      sj:["merg","mergi","meargă","mergem","mergeți","meargă"],
+      imp:["mergi","mergeți"],
+      tip:"Alternance e → ea au subjonctif : să meargă. Participe : mers (am mers)."},
+    {id:"spune", ro:"a spune", inf:"spune", part:"spus", fr:"dire", grp:"e",
+      pres:["spun","spui","spune","spunem","spuneți","spun"],
+      impf:["spuneam","spuneai","spunea","spuneam","spuneați","spuneau"],
+      sj:["spun","spui","spună","spunem","spuneți","spună"],
+      imp:["spune","spuneți"],
+      tip:"Participe irrégulier : spus. Impératif : spune (tu), spuneți (voi). Subjonctif : să spună."},
+    {id:"citi", ro:"a citi", inf:"citi", part:"citit", fr:"lire", grp:"i",
+      pres:["citesc","citești","citește","citim","citiți","citesc"],
+      impf:["citeam","citeai","citea","citeam","citeați","citeau"],
+      sj:["citesc","citești","citească","citim","citiți","citească"],
+      imp:["citește","citiți"],
+      tip:"Verbe en -i « à suffixe » : -esc, -ești, -ește, -im, -iți, -esc. L'imparfait est en -eam : citeam."},
+    {id:"locui", ro:"a locui", inf:"locui", part:"locuit", fr:"habiter", grp:"i",
+      pres:["locuiesc","locuiești","locuiește","locuim","locuiți","locuiesc"],
+      impf:["locuiam","locuiai","locuia","locuiam","locuiați","locuiau"],
+      sj:["locuiesc","locuiești","locuiască","locuim","locuiți","locuiască"],
+      imp:["locuiește","locuiți"],
+      tip:"Suffixe -esc : locuiesc, locuiești, locuiește… Question utile : Unde locuiești ? (Où habites-tu ?)"},
+    {id:"vorbi", ro:"a vorbi", inf:"vorbi", part:"vorbit", fr:"parler", grp:"i",
+      pres:["vorbesc","vorbești","vorbește","vorbim","vorbiți","vorbesc"],
+      impf:["vorbeam","vorbeai","vorbea","vorbeam","vorbeați","vorbeau"],
+      sj:["vorbesc","vorbești","vorbească","vorbim","vorbiți","vorbească"],
+      imp:["vorbește","vorbiți"],
+      tip:"Suffixe -esc. Phrase utile : Vorbiți mai rar, vă rog ! (Parlez plus lentement, s'il vous plaît !)"},
+    {id:"veni", ro:"a veni", inf:"veni", part:"venit", fr:"venir", grp:"i",
+      pres:["vin","vii","vine","venim","veniți","vin"],
+      impf:["veneam","veneai","venea","veneam","veneați","veneau"],
+      sj:["vin","vii","vină","venim","veniți","vină"],
+      imp:["vino","veniți"],
+      tip:"Présent sans suffixe : vin, vii, vine… Impératif irrégulier : vino (tu). Subjonctif : să vină."}
+  ];
+  const VERBS = RAW.map(v=>{
+    v.pc   = AUX_PC.map(a=>a+" "+v.part);
+    v.fut  = AUX_FUT.map(a=>a+" "+v.inf);
+    v.subj = v.sj.map(f=>"să "+f);
+    return v;
+  });
+  const VBY = {}; VERBS.forEach(v=>{ VBY[v.id]=v; });
+
+  /* Phrases à trous : [verbe, temps, index personne, phrase avec ___, traduction] */
+  const SENT = [
+    ["fi","pres",0,"Eu ___ francez.","Je suis français."],
+    ["fi","pres",1,"Tu ___ student?","Tu es étudiant ?"],
+    ["fi","pres",2,"El ___ profesor.","Il est professeur."],
+    ["fi","pres",3,"Noi ___ prieteni.","Nous sommes amis."],
+    ["fi","pres",4,"Voi ___ din Franța.","Vous êtes de France."],
+    ["fi","pc",0,"Ieri eu ___ la muncă.","Hier, j'ai été au travail."],
+    ["fi","fut",0,"Mâine eu ___ la București.","Demain, je serai à Bucarest."],
+    ["fi","impf",0,"Pe atunci eu ___ copil.","À cette époque, j'étais enfant."],
+    ["fi","subj",0,"Vreau ___ fericit.","Je veux être heureux."],
+    ["avea","pres",0,"Eu ___ un frate.","J'ai un frère."],
+    ["avea","pres",1,"Tu ___ o mașină.","Tu as une voiture."],
+    ["avea","pres",2,"Ea ___ două surori.","Elle a deux sœurs."],
+    ["avea","pc",3,"Anul trecut noi ___ un câine.","L'année dernière, nous avons eu un chien."],
+    ["avea","impf",0,"Când eram mic, eu ___ un câine.","Quand j'étais petit, j'avais un chien."],
+    ["face","pres",1,"Ce ___ tu?","Que fais-tu ?"],
+    ["face","pres",4,"Ce ___ voi?","Que faites-vous ?"],
+    ["face","pc",0,"Ieri eu ___ o prăjitură.","Hier, j'ai fait un gâteau."],
+    ["face","fut",2,"Mâine el ___ temele.","Demain, il fera ses devoirs."],
+    ["face","imp",0,"___ temele!","Fais tes devoirs !"],
+    ["merge","pres",0,"Eu ___ la muncă.","Je vais au travail."],
+    ["merge","pres",3,"Noi ___ la piață.","Nous allons au marché."],
+    ["merge","pc",5,"Ei ___ la mare vara trecută.","Ils sont allés à la mer l'été dernier."],
+    ["merge","subj",0,"Vreau ___ acasă.","Je veux aller à la maison."],
+    ["merge","imp",1,"___ încet!","Allez lentement !"],
+    ["spune","pres",0,"Eu ___ adevărul.","Je dis la vérité."],
+    ["spune","pc",0,"Ieri eu ___ tot.","Hier, j'ai tout dit."],
+    ["spune","imp",0,"___-mi!","Dis-moi !"],
+    ["citi","pres",0,"Eu ___ o carte.","Je lis un livre."],
+    ["citi","pres",5,"Ei ___ ziarul.","Ils lisent le journal."],
+    ["citi","pc",1,"Ieri tu ___ o carte.","Hier, tu as lu un livre."],
+    ["citi","fut",3,"Mâine noi ___ o poveste.","Demain, nous lirons une histoire."],
+    ["citi","impf",0,"Seara eu ___ mult.","Le soir, je lisais beaucoup."],
+    ["locui","pres",0,"Eu ___ în Franța.","J'habite en France."],
+    ["locui","pres",5,"Ei ___ la București.","Ils habitent à Bucarest."],
+    ["locui","impf",0,"Înainte eu ___ la Lyon.","Avant, j'habitais à Lyon."],
+    ["lucra","pres",0,"Eu ___ la Paris.","Je travaille à Paris."],
+    ["lucra","pres",3,"Noi ___ împreună.","Nous travaillons ensemble."],
+    ["lucra","pc",0,"Ieri eu ___ toată ziua.","Hier, j'ai travaillé toute la journée."],
+    ["lucra","fut",2,"Mâine ea ___ acasă.","Demain, elle travaillera à la maison."],
+    ["vorbi","pres",0,"Eu ___ românește.","Je parle roumain."],
+    ["vorbi","pres",4,"Voi ___ franceză.","Vous parlez français."],
+    ["vorbi","pc",1,"Ieri tu ___ cu ea.","Hier, tu as parlé avec elle."],
+    ["vorbi","imp",0,"___ mai rar!","Parle plus lentement !"],
+    ["putea","pres",0,"Eu ___ să înot.","Je peux (sais) nager."],
+    ["putea","pres",3,"Noi ___ să venim mâine.","Nous pouvons venir demain."],
+    ["putea","impf",0,"Când eram tânăr, eu ___ să alerg mult.","Quand j'étais jeune, je pouvais beaucoup courir."],
+    ["vrea","pres",0,"Eu ___ o cafea.","Je veux un café."],
+    ["vrea","pres",5,"Ei ___ apă.","Ils veulent de l'eau."],
+    ["vrea","pc",0,"Ieri eu ___ să vorbesc cu tine.","Hier, j'ai voulu te parler."],
+    ["bea","pres",3,"Noi ___ ceai.","Nous buvons du thé."],
+    ["bea","pc",0,"Ieri eu ___ o cafea.","Hier, j'ai bu un café."],
+    ["bea","fut",4,"Seara voi ___ vin.","Ce soir, vous boirez du vin."],
+    ["bea","imp",0,"___ apă!","Bois de l'eau !"],
+    ["manca","pres",2,"El ___ pâine.","Il mange du pain."],
+    ["manca","pres",3,"Noi ___ la restaurant.","Nous mangeons au restaurant."],
+    ["manca","pc",0,"Ieri eu ___ o pizza.","Hier, j'ai mangé une pizza."],
+    ["manca","fut",3,"Diseară noi ___ acasă.","Ce soir, nous mangerons à la maison."],
+    ["da","pres",0,"Eu îți ___ o carte.","Je te donne un livre."],
+    ["da","imp",1,"___-mi apă, vă rog!","Donnez-moi de l'eau, s'il vous plaît !"],
+    ["veni","pres",0,"Eu ___ de la muncă.","Je viens du travail."],
+    ["veni","pres",1,"Tu ___ cu noi?","Tu viens avec nous ?"],
+    ["veni","pc",0,"Ieri eu ___ târziu.","Hier, je suis venu tard."],
+    ["veni","fut",5,"Mâine ei ___ la noi.","Demain, ils viendront chez nous."],
+    ["veni","imp",0,"___ aici!","Viens ici !"],
+    ["sti","pres",0,"Eu ___ răspunsul.","Je connais la réponse."],
+    ["sti","pres",5,"Ei ___ româna.","Ils savent le roumain."],
+    ["sti","pc",0,"Eu nu ___ asta.","Je ne savais pas ça."],
+    ["invata","pres",0,"Eu ___ româna.","J'apprends le roumain."],
+    ["invata","pres",1,"Tu ___ franceza.","Tu apprends le français."],
+    ["invata","pc",0,"Ieri eu ___ două ore.","Hier, j'ai étudié deux heures."],
+    ["invata","subj",0,"Vreau ___ româna.","Je veux apprendre le roumain."]
+  ].map(s=>({v:s[0], t:s[1], pi:s[2], text:s[3], fr:s[4]}));
+
+  const MODES = {
+    choice:{icon:"🔘", name:"Choisir la forme", desc:"Une personne, un temps : trouve la bonne forme parmi 4."},
+    type  :{icon:"⌨️", name:"Écrire la forme", desc:"Tape la forme conjuguée (touches ă â î ș ț fournies)."},
+    id    :{icon:"🔍", name:"Reconnaître", desc:"On te donne une forme : retrouve le verbe, le temps et la personne."},
+    gap   :{icon:"📝", name:"Phrases à trous", desc:"Complète des phrases en contexte, avec la traduction."},
+    table :{icon:"🧮", name:"Tableau à remplir", desc:"Conjugue toutes les personnes d'un verbe d'un coup."},
+    mix   :{icon:"🎲", name:"Défi mixte", desc:"Un mélange de tous les exercices (hors tableaux)."}
+  };
+  const MODE_ORDER = ["choice","type","id","gap","table","mix"];
+
+  /* ---------- Utilitaires ---------- */
+  const $ = id => document.getElementById(id);
+  const rnd = n => Math.floor(Math.random()*n);
+  function sh(a){ const b=a.slice(); for(let i=b.length-1;i>0;i--){ const j=rnd(i+1); [b[i],b[j]]=[b[j],b[i]]; } return b; }
+  function uniq(a){ return Array.from(new Set(a)); }
+  function norm(s){
+    return String(s||"").normalize("NFC")
+      .replace(/\u015F/g,"\u0219").replace(/\u0163/g,"\u021B")
+      .replace(/\u015E/g,"\u0219").replace(/\u0162/g,"\u021B")
+      .toLowerCase().replace(/[.,!?;:«»"]/g,"").replace(/\s+/g," ").trim();
+  }
+  function noDia(s){ return norm(s).normalize("NFD").replace(/[\u0300-\u036f]/g,""); }
+  function accepts(v,t,pi,given){
+    const g = norm(given);
+    if(g===norm(v[t][pi])) return true;
+    const alt = v.alt && v.alt[t+":"+pi];
+    return !!(alt && alt.some(a=>norm(a)===g));
+  }
+  function persOf(tense){ return tense==="imp" ? PERS_IMP : PERS; }
+  function hasT(v,t){ return !!v[t]; }
+  function esc(s){ return String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+  function sayf(f){ return `<span class="sayf" data-say="${esc(f)}" role="button" tabindex="0" aria-label="Écouter : ${esc(f)}">${esc(f)}</span>`; }
+
+  function store(){
+    if(!P.conj) P.conj = {};
+    const c = P.conj;
+    if(!c.best) c.best = {};
+    if(!c.tense) c.tense = {};
+    if(!c.verb) c.verb = {};
+    if(!c.sessions) c.sessions = 0;
+    return c;
+  }
+  function record(vid, tense, ok, ko){
+    const c = store();
+    c.tense[tense] = c.tense[tense] || {ok:0,ko:0};
+    c.verb[vid] = c.verb[vid] || {ok:0,ko:0};
+    c.tense[tense].ok += ok; c.tense[tense].ko += ko;
+    c.verb[vid].ok += ok; c.verb[vid].ko += ko;
+  }
+  function weakVerbs(){
+    const c = store();
+    return VERBS.filter(v=>{
+      const s = c.verb[v.id];
+      if(!s || (s.ok+s.ko)<1) return false;
+      return s.ko>0 && s.ok/(s.ok+s.ko) < 0.8;
+    }).map(v=>v.id);
+  }
+  function goNav(target){
+    const btn = document.querySelector('#nav button[data-target="'+target+'"]');
+    if(btn) btn.click();
+  }
+
+  /* ---------- Onglets ---------- */
+  const paneF = $("cj-pane-fiches"), paneT = $("cj-pane-train");
+  let sess = null;   // session en cours
+  function showTab(name){
+    document.querySelectorAll(".cj-tab").forEach(b=>b.classList.toggle("active", b.dataset.cj===name));
+    paneF.style.display = name==="fiches" ? "block" : "none";
+    paneT.style.display = name==="train" ? "block" : "none";
+    if(name==="train" && !sess) renderSetup();
+  }
+  document.querySelectorAll(".cj-tab").forEach(b=>b.addEventListener("click", ()=>showTab(b.dataset.cj)));
+
+  /* ---------- Fiches ---------- */
+  let ficheId = "lucra";
+  const vchips = $("cj-vchips");
+  function renderVChips(){
+    let html = "";
+    Object.keys(GROUPS).forEach(g=>{
+      const list = VERBS.filter(v=>v.grp===g);
+      if(!list.length) return;
+      html += `<div class="cj-group-title">${GROUPS[g].label}</div><div class="cj-chipline">` +
+        list.map(v=>`<button type="button" class="chip${v.id===ficheId?" active":""}" data-v="${v.id}">${v.ro} <small style="opacity:.75">· ${v.fr.split(",")[0]}</small></button>`).join("") + `</div>`;
+    });
+    vchips.innerHTML = html;
+    vchips.querySelectorAll("[data-v]").forEach(b=>b.addEventListener("click", ()=>{ ficheId=b.dataset.v; renderVChips(); renderFiche(); }));
+  }
+  function renderFiche(){
+    const v = VBY[ficheId];
+    let rows = "";
+    for(let i=0;i<6;i++){
+      rows += `<tr><td class="p">${PERS[i].ro} <small>${PERS[i].fr}</small></td>` + T_TABLE.map(t=>`<td class="f">${sayf(v[t][i])}</td>`).join("") + `</tr>`;
+    }
+    const imp = v.imp ? `<div class="tip"><b>Impératif</b> — tu : ${sayf(v.imp[0])} · voi : ${sayf(v.imp[1])}</div>` : `<div class="tip"><b>Impératif</b> — pas d'impératif courant pour ce verbe.</div>`;
+    $("cj-fiche").innerHTML = `
+      <div class="cj-head">
+        <span class="big">${v.ro}</span><span class="fr">${v.fr}</span>
+        <span class="cj-badge">${GROUPS[v.grp].label}</span>
+        <span class="cj-badge gold">participe : ${v.part}</span>
+      </div>
+      <p class="cj-hint" style="margin:.2rem 0 .4rem">Clique sur une forme pour l'écouter 🔊</p>
+      <div class="tbl-scroll"><table class="t cj-table">
+        <tr><th></th>${T_TABLE.map(t=>`<th>${TENSES[t].label}</th>`).join("")}</tr>${rows}
+      </table></div>
+      ${imp}
+      <div class="tip">💡 ${v.tip}</div>
+      <div class="cj-cta">
+        <button type="button" class="action primary" id="cj-train-this">📝 S'entraîner sur ce verbe</button>
+      </div>`;
+    $("cj-train-this").addEventListener("click", ()=>{
+      cfg.verbs = new Set([v.id]);
+      cfg.weak = false;
+      showTab("train"); sess = null; renderSetup();
+    });
+  }
+
+  /* ---------- Réglages d'entraînement ---------- */
+  const cfg = { mode:"choice", tenses:new Set(["pres","pc"]), verbs:new Set(VERBS.map(v=>v.id)), len:12, weak:false };
+  let lastInput = null;
+  const stage = $("cj-stage");
+
+  function setupPoolCount(){
+    const ids = cfg.weak ? weakVerbs() : Array.from(cfg.verbs);
+    return VERBS.filter(v=>ids.includes(v.id) && Array.from(cfg.tenses).some(t=>hasT(v,t))).length;
+  }
+
+  function renderSetup(){
+    sess = null;
+    const weak = weakVerbs();
+    const vchipHTML = VERBS.map(v=>`<button type="button" class="chip${cfg.verbs.has(v.id)?" active":""}" data-vsel="${v.id}">${v.ro}</button>`).join("");
+    stage.innerHTML = `
+      <div class="cj-card">
+        <div class="cj-label">1 · Type d'exercice</div>
+        <div class="cj-modes">${MODE_ORDER.map(m=>`<button type="button" class="cj-mode${cfg.mode===m?" active":""}" data-mode="${m}"><b>${MODES[m].icon} ${MODES[m].name}</b><span>${MODES[m].desc}</span></button>`).join("")}</div>
+
+        <div class="cj-label">2 · Temps</div>
+        <div class="cj-chipline" id="cj-tsel">${T_ORDER.map(t=>`<button type="button" class="chip${cfg.tenses.has(t)?" active":""}" data-tsel="${t}">${TENSES[t].label}</button>`).join("")}</div>
+
+        <div class="cj-label">3 · Verbes</div>
+        <div class="cj-chipline" style="margin-bottom:.5rem;">
+          <button type="button" class="chip q" data-quick="all">Tous</button>
+          <button type="button" class="chip q" data-quick="a">-a</button>
+          <button type="button" class="chip q" data-quick="ea">-ea</button>
+          <button type="button" class="chip q" data-quick="e">-e</button>
+          <button type="button" class="chip q" data-quick="i">-i</button>
+          <button type="button" class="chip q" data-quick="irr">Irréguliers</button>
+        </div>
+        <div class="cj-chipline" id="cj-vsel">${vchipHTML}</div>
+        <label class="cj-check" style="margin-top:.7rem;${weak.length?"":"opacity:.55;"}">
+          <input type="checkbox" id="cj-weak" ${cfg.weak?"checked":""} ${weak.length?"":"disabled"}>
+          🎯 Cibler mes points faibles ${weak.length?`(${weak.map(id=>VBY[id].ro).join(", ")})`:"(disponible après quelques exercices)"}
+        </label>
+
+        <div class="cj-label">4 · Nombre de questions</div>
+        <div class="cj-seg" id="cj-len">${[8,12,20].map(n=>`<button type="button" class="${cfg.len===n?"active":""}" data-len="${n}">${n}</button>`).join("")}</div>
+
+        <div class="cj-start">
+          <button type="button" class="action primary" id="cj-go">▶ Commencer</button>
+          <span class="cj-hint" id="cj-hint"></span>
+        </div>
+      </div>`;
+
+    stage.querySelectorAll("[data-mode]").forEach(b=>b.addEventListener("click", ()=>{ cfg.mode=b.dataset.mode; renderSetup(); }));
+    stage.querySelectorAll("[data-tsel]").forEach(b=>b.addEventListener("click", ()=>{
+      const t=b.dataset.tsel;
+      if(cfg.tenses.has(t)){ if(cfg.tenses.size>1) cfg.tenses.delete(t); } else cfg.tenses.add(t);
+      renderSetup();
+    }));
+    stage.querySelectorAll("[data-vsel]").forEach(b=>b.addEventListener("click", ()=>{
+      const id=b.dataset.vsel;
+      if(cfg.verbs.has(id)){ if(cfg.verbs.size>1) cfg.verbs.delete(id); } else cfg.verbs.add(id);
+      cfg.weak=false; renderSetup();
+    }));
+    stage.querySelectorAll("[data-quick]").forEach(b=>b.addEventListener("click", ()=>{
+      const q=b.dataset.quick;
+      cfg.verbs = new Set(VERBS.filter(v=>q==="all"||v.grp===q).map(v=>v.id));
+      cfg.weak=false; renderSetup();
+    }));
+    stage.querySelectorAll("[data-len]").forEach(b=>b.addEventListener("click", ()=>{ cfg.len=+b.dataset.len; renderSetup(); }));
+    const w = $("cj-weak"); if(w) w.addEventListener("change", e=>{ cfg.weak=e.target.checked; renderSetup(); });
+    $("cj-go").addEventListener("click", startFromSetup);
+    const hint = $("cj-hint");
+    const n = setupPoolCount();
+    hint.textContent = n ? `${n} verbe${n>1?"s":""} · ${cfg.tenses.size} temps` : "Aucun verbe ne correspond à ce temps.";
+    if(!n) $("cj-go").disabled = true;
+  }
+
+  /* ---------- Fabrication des questions ---------- */
+  function candidates(){
+    const ids = cfg.weak ? weakVerbs() : Array.from(cfg.verbs);
+    const out = [];
+    VERBS.forEach(v=>{
+      if(!ids.includes(v.id)) return;
+      cfg.tenses.forEach(t=>{
+        if(!hasT(v,t)) return;
+        v[t].forEach((f,pi)=>out.push({v,t,pi,f}));
+      });
+    });
+    return out;
+  }
+  function ambiguous(v, f){
+    let c = 0;
+    T_ORDER.forEach(t=>{ if(v[t]) v[t].forEach(x=>{ if(x===f) c++; }); });
+    return c>1;
+  }
+  function formOptions(v,t,pi,correct){
+    const same = uniq(v[t].filter((f,i)=>i!==pi && f!==correct));
+    const other = uniq(T_ORDER.filter(x=>x!==t && x!=="imp" && v[x]).map(x=>v[x][Math.min(pi, v[x].length-1)]).filter(f=>f!==correct && !same.includes(f)));
+    const otherAll = uniq(T_ORDER.filter(x=>x!==t && x!=="imp" && v[x]).flatMap(x=>v[x]).filter(f=>f!==correct && !same.includes(f)));
+    const picks = sh(same).slice(0,2);
+    sh(other).forEach(f=>{ if(picks.length<3 && !picks.includes(f)) picks.push(f); });
+    sh(same).forEach(f=>{ if(picks.length<3 && !picks.includes(f)) picks.push(f); });
+    sh(otherAll).forEach(f=>{ if(picks.length<3 && !picks.includes(f)) picks.push(f); });
+    if(picks.length<3){
+      sh(VERBS.filter(x=>x!==v && x[t])).forEach(x=>{ const f=x[t][Math.min(pi,x[t].length-1)]; if(picks.length<3 && f!==correct && !picks.includes(f)) picks.push(f); });
+    }
+    return sh([correct, ...picks]);
+  }
+  function idLabel(v,t,pi){ return `${v.ro} · ${TENSES[t].low} · ${persOf(t)[pi].short}`; }
+  function idOptions(v,t,pi,f){
+    const correct = idLabel(v,t,pi);
+    const set = new Set([correct]);
+    const pick = [];
+    function add(lbl){ if(!set.has(lbl) && pick.length<3){ set.add(lbl); pick.push(lbl); } }
+    // même verbe, même temps, autre personne
+    sh(persOf(t).map((_,i)=>i).filter(i=>i!==pi && v[t][i]!==f)).slice(0,1).forEach(i=>add(idLabel(v,t,i)));
+    // même verbe, autre temps, même personne
+    sh(T_ORDER.filter(x=>x!==t && v[x] && x!=="imp")).forEach(x=>{ const i=Math.min(pi,v[x].length-1); if(v[x][i]!==f) add(idLabel(v,x,i)); });
+    // autre verbe, même temps/personne
+    sh(VERBS.filter(x=>x!==v && x[t])).forEach(x=>{ const i=Math.min(pi,x[t].length-1); if(x[t][i]!==f) add(idLabel(x,t,i)); });
+    return sh([correct, ...pick]);
+  }
+
+  function makeQuestion(type, c){
+    if(type==="choice" || type==="type"){
+      return {type, v:c.v, t:c.t, pi:c.pi, answer:c.f, options: type==="choice" ? formOptions(c.v,c.t,c.pi,c.f) : null};
+    }
+    if(type==="id"){
+      return {type, v:c.v, t:c.t, pi:c.pi, form:c.f, answer:idLabel(c.v,c.t,c.pi), options:idOptions(c.v,c.t,c.pi,c.f)};
+    }
+    return null;
+  }
+  function makeGap(s){
+    const v=VBY[s.v], ans=v[s.t][s.pi];
+    return {type:"gap", v, t:s.t, pi:s.pi, s, answer:ans, options:formOptions(v,s.t,s.pi,ans)};
+  }
+  function gapPool(){
+    const ids = cfg.weak ? weakVerbs() : Array.from(cfg.verbs);
+    return SENT.filter(s=>ids.includes(s.v) && cfg.tenses.has(s.t));
+  }
+
+  function buildQuestions(){
+    const cands = candidates();
+    const N = cfg.len;
+    let qs = [];
+    const m = cfg.mode;
+    if(m==="choice" || m==="type"){
+      qs = sh(cands).slice(0,N).map(c=>makeQuestion(m,c));
+    } else if(m==="id"){
+      const ok = cands.filter(c=>!ambiguous(c.v,c.f));
+      qs = sh(ok).slice(0,N).map(c=>makeQuestion("id",c));
+    } else if(m==="gap"){
+      qs = sh(gapPool()).slice(0,N).map(makeGap);
+    } else if(m==="table"){
+      const combos = [];
+      const ids = cfg.weak ? weakVerbs() : Array.from(cfg.verbs);
+      VERBS.forEach(v=>{
+        if(!ids.includes(v.id)) return;
+        cfg.tenses.forEach(t=>{ if(hasT(v,t)) combos.push({type:"table", v, t}); });
+      });
+      qs = sh(combos).slice(0, Math.max(3, Math.ceil(N/3)));
+    } else if(m==="mix"){
+      const gaps = sh(gapPool());
+      const idc = sh(cands.filter(c=>!ambiguous(c.v,c.f)));
+      const pool = sh(cands);
+      const kinds = ["choice","type","id","gap"];
+      let gi=0, ii=0, pi=0;
+      for(let k=0;k<N;k++){
+        const kind = kinds[k%kinds.length];
+        if(kind==="gap" && gi<gaps.length) qs.push(makeGap(gaps[gi++]));
+        else if(kind==="id" && ii<idc.length) qs.push(makeQuestion("id", idc[ii++]));
+        else if(pi<pool.length) qs.push(makeQuestion(kind==="type"?"type":"choice", pool[pi++]));
+      }
+      qs = sh(qs);
+    }
+    return qs.filter(Boolean);
+  }
+
+  function startFromSetup(){
+    const qs = buildQuestions();
+    if(!qs.length){
+      $("cj-hint").textContent = "Pas assez de contenu pour cette sélection : ajoute des verbes ou des temps.";
+      return;
+    }
+    beginSession(qs);
+  }
+  function beginSession(qs){
+    sess = { qs, i:0, res:[], streak:0, bestStreak:0, answered:false };
+    renderQuestion();
+  }
+
+  /* ---------- Affichage d'une question ---------- */
+  const KIND = {choice:"Choisis la forme", type:"Écris la forme", id:"Reconnais la forme", gap:"Complète la phrase", table:"Remplis le tableau"};
+  function formHint(t){
+    if(t==="pc")   return "Écris la forme complète : auxiliaire + participe (ex. am lucrat).";
+    if(t==="fut")  return "Écris la forme complète : voi / vei / va… + infinitif.";
+    if(t==="subj") return "Écris la forme complète, avec « să ».";
+    return "";
+  }
+  function promptHTML(q){
+    const pe = persOf(q.t)[q.pi];
+    if(q.type==="choice" || q.type==="type"){
+      const h = q.type==="type" ? formHint(q.t) : "";
+      return `Conjugue <span class="v">${q.v.ro}</span> <small>(${q.v.fr})</small><br>
+        <span class="pill t">${TENSES[q.t].label}</span> <span class="pill p">${pe.ro}</span> <small>${pe.fr}</small>${h?`<div class="cj-hint-line">${h}</div>`:""}`;
+    }
+    if(q.type==="id"){
+      return `Quelle est cette forme ?<span class="cj-form">${esc(q.form)}</span>`;
+    }
+    if(q.type==="gap"){
+      const parts = q.s.text.split("___");
+      return `${esc(parts[0])}<span class="cj-blank" id="cj-blank">&nbsp;</span>${esc(parts[1]||"")}
+        <div class="cj-sent-fr">${esc(q.s.fr)}</div>
+        <div style="margin-top:.5rem"><span class="pill">${q.v.ro}</span> <span class="pill t">${TENSES[q.t].label}</span></div>`;
+    }
+    if(q.type==="table"){
+      const h = formHint(q.t);
+      return `Conjugue <span class="v">${q.v.ro}</span> <small>(${q.v.fr})</small> au <span class="pill t">${TENSES[q.t].low}</span>${h?`<div class="cj-hint-line">${h}</div>`:""}`;
+    }
+    return "";
+  }
+  function keyboardHTML(){
+    const L = "\u0103\u00E2\u00EE\u0219\u021B".split("");
+    return `<details class="cj-kbd" open><summary>⌨️ Caractères roumains</summary><div class="cj-keys">${
+      L.map(c=>`<button type="button" class="cj-key" data-k="${c}">${c}</button>`).join("")
+    }<button type="button" class="cj-key wide" data-k=" ">espace</button><button type="button" class="cj-key wide" data-k="⌫">⌫ effacer</button></div></details>`;
+  }
+  function bindKeyboard(){
+    stage.querySelectorAll(".cj-key").forEach(b=>{
+      b.addEventListener("mousedown", e=>e.preventDefault());
+      b.addEventListener("click", ()=>{
+        const inp = (lastInput && document.body.contains(lastInput) && !lastInput.disabled) ? lastInput : stage.querySelector(".cj-input:not([disabled])");
+        if(!inp) return;
+        const k = b.dataset.k;
+        const s = inp.selectionStart==null ? inp.value.length : inp.selectionStart;
+        const e = inp.selectionEnd==null ? s : inp.selectionEnd;
+        if(k==="⌫"){
+          if(s!==e){ inp.value = inp.value.slice(0,s)+inp.value.slice(e); inp.setSelectionRange(s,s); }
+          else if(s>0){ inp.value = inp.value.slice(0,s-1)+inp.value.slice(s); inp.setSelectionRange(s-1,s-1); }
+        } else {
+          inp.value = inp.value.slice(0,s)+k+inp.value.slice(e);
+          inp.setSelectionRange(s+1,s+1);
+        }
+        inp.focus();
+      });
+    });
+  }
+  stage.addEventListener("focusin", e=>{ if(e.target.classList && e.target.classList.contains("cj-input")) lastInput = e.target; });
+
+  function topBar(){
+    const n = sess.qs.length;
+    const pct = Math.round((sess.i/n)*100);
+    return `<div class="cj-top">
+      <span>${Math.min(sess.i+1,n)} / ${n}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+      <span class="cj-streak">${sess.streak>=3?"🔥 "+sess.streak:(sess.streak>0?"✔ "+sess.streak:"")}</span>
+      <button type="button" class="cj-quit" id="cj-quit">Quitter</button>
+    </div>`;
+  }
+
+  function renderQuestion(){
+    if(sess.i >= sess.qs.length){ renderResult(); return; }
+    const q = sess.qs[sess.i];
+    sess.answered = false;
+    let body = "";
+    if(q.type==="choice" || q.type==="id" || q.type==="gap"){
+      body = `<div class="cj-opts">${q.options.map((o,k)=>`<button type="button" class="opt-btn" data-opt="${esc(o)}"><span class="n">${k+1}</span>${esc(o)}</button>`).join("")}</div>`;
+    } else if(q.type==="type"){
+      body = `<input class="cj-input" id="cj-in" type="text" lang="ro" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Écris ta réponse…">
+        ${keyboardHTML()}
+        <div class="cj-actions"><button type="button" class="action primary" id="cj-submit">Valider</button></div>`;
+    } else if(q.type==="table"){
+      const pl = persOf(q.t);
+      body = `<div class="cj-fill">${pl.map((p,i)=>`<label for="cj-c${i}">${p.ro} <small style="color:var(--muted2)">${p.fr}</small></label><input class="cj-input" id="cj-c${i}" type="text" lang="ro" autocomplete="off" autocapitalize="off" spellcheck="false">`).join("")}</div>
+        ${keyboardHTML()}
+        <div class="cj-actions"><button type="button" class="action primary" id="cj-submit">Vérifier</button></div>`;
+    }
+    stage.innerHTML = topBar() + `<div class="cj-qbox"><div class="cj-kind">${KIND[q.type]}</div><div class="cj-q">${promptHTML(q)}</div>${body}<div id="cj-fb"></div></div>`;
+    $("cj-quit").addEventListener("click", ()=>{ if(confirm("Quitter cet exercice ?")) renderSetup(); });
+
+    if(q.type==="choice" || q.type==="id" || q.type==="gap"){
+      stage.querySelectorAll(".opt-btn").forEach(b=>b.addEventListener("click", ()=>answerChoice(b)));
+    } else {
+      bindKeyboard();
+      const first = stage.querySelector(".cj-input"); if(first){ lastInput = first; first.focus(); }
+      $("cj-submit").addEventListener("click", ()=> q.type==="table" ? answerTable() : answerType());
+    }
+  }
+
+  /* ---------- Correction ---------- */
+  function paraHTML(v,t,hi){
+    const pl = persOf(t);
+    return `<div class="cj-para">${v[t].map((f,i)=>`<div class="${i===hi?"hi":""}"><small>${pl[i].short}</small>${esc(f)}</div>`).join("")}</div>`;
+  }
+  function feedback(q, ok, given){
+    const fbEl = $("cj-fb");
+    const notes = [];
+    if(q.t==="pc")   notes.push(`Passé composé : auxiliaire (am, ai, a…) + participe <b>${q.v.part}</b>.`);
+    if(q.t==="fut")  notes.push(`Futur : voi, vei, va… + infinitif <b>${q.v.inf}</b>.`);
+    if(q.t==="subj") notes.push(`Subjonctif : « să » + forme du verbe.`);
+    if(!ok && given && q.type!=="id" && noDia(given)===noDia(q.answer)) notes.unshift(`Presque : vérifie les signes diacritiques (ă, â, î, ș, ț) — ils changent la forme.`);
+    if(!ok && q.type!=="id") notes.push(q.v.tip);
+    fbEl.innerHTML = `<div class="cj-fb ${ok?"":"ko"}">
+        <div class="verdict">${ok?"✅ Correct !":"❌ Pas tout à fait"}</div>
+        ${ok && q.type!=="id" ? "" : `<div>Réponse : <span class="ans">${esc(q.answer)}</span></div>`}
+        ${ (!ok && given) ? `<div class="why">Ta réponse : <s>${esc(given)}</s></div>` : ""}
+        ${q.type==="id" ? "" : paraHTML(q.v,q.t,q.pi)}
+        ${notes.length?`<div class="why">💡 ${notes.join(" ")}</div>`:""}
+      </div>
+      <div class="cj-actions"><button type="button" class="action primary" id="cj-next">${sess.i+1>=sess.qs.length?"Voir le résultat":"Question suivante"} →</button></div>`;
+    $("cj-next").addEventListener("click", nextQ);
+    $("cj-next").focus();
+  }
+  function finishAnswer(q, ok, given, pts, max){
+    sess.answered = true;
+    sess.res[sess.i] = {ok, given, pts, max};
+    sess.streak = ok ? sess.streak+1 : 0;
+    sess.bestStreak = Math.max(sess.bestStreak, sess.streak);
+    if(q.type!=="table") record(q.v.id, q.t, ok?1:0, ok?0:1);
+    save();
+    const st = stage.querySelector(".cj-streak");
+    if(st) st.textContent = sess.streak>=3 ? "🔥 "+sess.streak : (sess.streak>0 ? "✔ "+sess.streak : "");
+  }
+  function answerChoice(btn){
+    if(sess.answered) return;
+    const q = sess.qs[sess.i];
+    const val = btn.dataset.opt;
+    const ok = val===q.answer;
+    stage.querySelectorAll(".opt-btn").forEach(b=>{
+      b.disabled = true;
+      if(b.dataset.opt===q.answer) b.classList.add("ok");
+    });
+    if(!ok) btn.classList.add("ko");
+    if(q.type==="gap"){ const bl=$("cj-blank"); if(bl) bl.textContent = q.answer; }
+    finishAnswer(q, ok, val, ok?1:0, 1);
+    feedback(q, ok, ok?"":val);
+  }
+  function answerType(){
+    if(sess.answered) return;
+    const q = sess.qs[sess.i];
+    const inp = $("cj-in");
+    const given = inp.value.trim();
+    if(!given){ inp.focus(); return; }
+    const ok = accepts(q.v, q.t, q.pi, given);
+    inp.disabled = true; inp.classList.add(ok?"correct":"incorrect");
+    const kb = stage.querySelector(".cj-kbd"); if(kb) kb.style.display="none";
+    $("cj-submit").style.display="none";
+    finishAnswer(q, ok, given, ok?1:0, 1);
+    feedback(q, ok, ok?"":given);
+  }
+  function answerTable(){
+    if(sess.answered) return;
+    const q = sess.qs[sess.i];
+    const pl = persOf(q.t);
+    let good = 0; const bad = [];
+    pl.forEach((p,i)=>{
+      const inp = $("cj-c"+i);
+      const okc = accepts(q.v, q.t, i, inp.value);
+      inp.disabled = true; inp.classList.add(okc?"correct":"incorrect");
+      if(okc) good++; else {
+        bad.push({p:p.short, given:inp.value.trim(), ans:q.v[q.t][i]});
+        const fb = document.createElement("div"); fb.className="cell-fb"; fb.textContent = "→ "+q.v[q.t][i];
+        inp.insertAdjacentElement("afterend", fb);
+      }
+    });
+    const kb = stage.querySelector(".cj-kbd"); if(kb) kb.style.display="none";
+    $("cj-submit").style.display="none";
+    const all = good===pl.length;
+    record(q.v.id, q.t, good, pl.length-good);
+    finishAnswer(q, all, "", good, pl.length);
+    sess.res[sess.i].bad = bad;
+    const fbEl = $("cj-fb");
+    fbEl.innerHTML = `<div class="cj-fb ${all?"":"ko"}"><div class="verdict">${all?"✅ Tableau parfait !":`${good} / ${pl.length} formes justes`}</div>${all?"":`<div class="why">💡 ${q.v.tip}</div>`}</div>
+      <div class="cj-actions"><button type="button" class="action primary" id="cj-next">${sess.i+1>=sess.qs.length?"Voir le résultat":"Question suivante"} →</button></div>`;
+    $("cj-next").addEventListener("click", nextQ);
+    $("cj-next").focus();
+  }
+  function nextQ(){ sess.i++; renderQuestion(); }
+
+  /* Raccourcis clavier : 1-4 pour les choix, Entrée pour valider / continuer */
+  document.addEventListener("keydown", e=>{
+    if(!sess || !$("sec-conjugation").classList.contains("active") || paneT.style.display==="none") return;
+    const q = sess.qs[sess.i]; if(!q) return;
+    if(e.key==="Enter"){
+      const next = $("cj-next");
+      if(next){ if(document.activeElement!==next){ e.preventDefault(); nextQ(); } return; }
+      if(!sess.answered && (q.type==="type" || q.type==="table")){
+        if(q.type==="table"){
+          const inputs = Array.from(stage.querySelectorAll(".cj-input"));
+          const idx = inputs.indexOf(document.activeElement);
+          if(idx>=0 && idx<inputs.length-1){ e.preventDefault(); inputs[idx+1].focus(); return; }
+          e.preventDefault(); answerTable();
+        } else { e.preventDefault(); answerType(); }
+      }
+    } else if(!sess.answered && /^[1-4]$/.test(e.key) && (q.type==="choice"||q.type==="id"||q.type==="gap") && document.activeElement.tagName!=="INPUT"){
+      const b = stage.querySelectorAll(".opt-btn")[+e.key-1]; if(b) b.click();
+    }
+  });
+
+  /* ---------- Résultats ---------- */
+  function renderResult(){
+    const pts = sess.res.reduce((a,r)=>a+r.pts,0);
+    const max = sess.res.reduce((a,r)=>a+r.max,0);
+    const pct = max ? Math.round(pts/max*100) : 0;
+    const c = store();
+    const prev = c.best[cfg.mode];
+    const isNew = !prev || pct>prev.pct;
+    if(isNew) c.best[cfg.mode] = {pct, pts, max};
+    c.sessions = (c.sessions||0)+1;
+    save();
+
+    const msg = pct>=90 ? "Excelent ! Excellent !" : pct>=70 ? "Foarte bine ! Très bien !" : pct>=50 ? "Bine ! Pas mal, continue." : "Nu te descuraja — relis la fiche et retente !";
+
+    // détail par temps
+    const by = {};
+    sess.qs.forEach((q,i)=>{ const r=sess.res[i]; if(!r) return; const t=q.t; by[t]=by[t]||{p:0,m:0}; by[t].p+=r.pts; by[t].m+=r.max; });
+    const brk = T_ORDER.filter(t=>by[t]).map(t=>{
+      const p = Math.round(by[t].p/by[t].m*100);
+      return `<div class="prog-row"><div class="lbl">${TENSES[t].label}</div><div class="bar-track"><div class="bar-fill" style="width:${p}%;background:${p>=70?"var(--green)":"var(--gold)"}"></div></div><div class="num">${by[t].p}/${by[t].m}</div></div>`;
+    }).join("");
+
+    // erreurs
+    const errs = [];
+    sess.qs.forEach((q,i)=>{
+      const r = sess.res[i]; if(!r || r.pts===r.max) return;
+      if(q.type==="table"){
+        errs.push(`<div class="cj-err"><span class="rof">${q.v.ro}</span> · ${TENSES[q.t].low} — ${(r.bad||[]).map(b=>`${b.p} : ${b.given?`<span class="was">${esc(b.given)}</span> → `:""}<span class="rof">${esc(b.ans)}</span>`).join(" · ")}</div>`);
+      } else if(q.type==="id"){
+        errs.push(`<div class="cj-err"><span class="rof">${esc(q.form)}</span> = <span class="rof">${esc(q.answer)}</span> ${r.given?`<br><span class="was">${esc(r.given)}</span>`:""}</div>`);
+      } else if(q.type==="gap"){
+        errs.push(`<div class="cj-err">${esc(q.s.text.replace("___", "…"))} → <span class="rof">${esc(q.answer)}</span> ${r.given?`<span class="was">${esc(r.given)}</span>`:""}</div>`);
+      } else {
+        errs.push(`<div class="cj-err"><span class="rof">${q.v.ro}</span> · ${TENSES[q.t].low} · ${persOf(q.t)[q.pi].short} → <span class="rof">${esc(q.answer)}</span> ${r.given?`<span class="was">${esc(r.given)}</span>`:""}</div>`);
+      }
+    });
+
+    stage.innerHTML = `<div class="cj-result">
+        <div class="score">${pts} / ${max}</div>
+        <div class="pct">${pct} %${isNew ? ' <span class="new">Nouveau record</span>' : ` · record : ${prev.pct} %`}</div>
+        <div class="msg">${msg}</div>
+        <div class="pct">Meilleure série : ${sess.bestStreak} 🔥</div>
+        <div class="cj-brk">${brk}</div>
+        <div class="cj-cta" style="justify-content:center">
+          ${errs.length?`<button type="button" class="action primary" id="cj-retry">🔁 Rejouer mes erreurs (${errs.length})</button>`:""}
+          <button type="button" class="action ${errs.length?"ghost":"primary"}" id="cj-again">↻ Nouvelle série</button>
+          <button type="button" class="action ghost" id="cj-settings">⚙ Réglages</button>
+        </div>
+        ${errs.length?`<div class="cj-errs"><div class="cj-label">À retenir</div>${errs.join("")}</div>`:`<p style="margin-top:1rem">Aucune erreur, bravo ! 🎉</p>`}
+      </div>`;
+    $("cj-again").addEventListener("click", ()=>{ const qs=buildQuestions(); if(qs.length) beginSession(qs); else renderSetup(); });
+    $("cj-settings").addEventListener("click", renderSetup);
+    const rt = $("cj-retry");
+    if(rt) rt.addEventListener("click", ()=>{
+      const failed = sess.qs.filter((q,i)=>sess.res[i] && sess.res[i].pts<sess.res[i].max).map(q=>{
+        if(q.type==="choice" || q.type==="gap") return {...q, options:formOptions(q.v,q.t,q.pi,q.answer)};
+        return q;
+      });
+      beginSession(sh(failed));
+    });
+    renderConjProgress();
+  }
+
+  /* ---------- Page Progression ---------- */
+  function renderConjProgress(){
+    const host = $("progress-conj"); if(!host) return;
+    const c = store();
+    let html = "";
+    html += `<div class="cj-label" style="margin-top:.2rem">Meilleur score par exercice</div>`;
+    html += MODE_ORDER.map(m=>{
+      const b = c.best[m]; const p = b ? b.pct : 0;
+      return `<div class="prog-row"><div class="lbl">${MODES[m].icon} ${MODES[m].name}</div><div class="bar-track"><div class="bar-fill" style="width:${p}%;background:var(--gold)"></div></div><div class="num">${b?p+" %":"—"}</div></div>`;
+    }).join("");
+    html += `<div class="cj-label">Réussite par temps</div>`;
+    html += T_ORDER.map(t=>{
+      const s = c.tense[t]; const tot = s ? s.ok+s.ko : 0; const p = tot ? Math.round(s.ok/tot*100) : 0;
+      return `<div class="prog-row"><div class="lbl">${TENSES[t].label}</div><div class="bar-track"><div class="bar-fill" style="width:${p}%"></div></div><div class="num">${tot?p+" %":"—"}</div></div>`;
+    }).join("");
+    const weak = weakVerbs();
+    html += `<div class="cj-label">Verbes à retravailler</div><p class="cj-hint">${weak.length ? weak.map(id=>`<b class="rc">${VBY[id].ro}</b>`).join(" · ") : "Rien à signaler pour l'instant."}</p>`;
+    host.innerHTML = html;
+  }
+  const progBtn = document.querySelector('#nav button[data-target="progress"]');
+  if(progBtn) progBtn.addEventListener("click", renderConjProgress);
+  const resetBtn = $("reset-all");
+  if(resetBtn) resetBtn.addEventListener("click", ()=>{
+    setTimeout(()=>{ if(!P.conj){ sess = null; renderConjProgress(); if(paneT.style.display!=="none") renderSetup(); } }, 0);
+  });
+
+  /* ---------- Liens depuis les autres onglets ---------- */
+  document.querySelectorAll("[data-go-conj]").forEach(b=>b.addEventListener("click", ()=>{
+    goNav("conjugation");
+    showTab(b.dataset.goConj);
+  }));
+  document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click", ()=>goNav(b.dataset.go)));
+
+  /* ---------- Init ---------- */
+  renderVChips();
+  renderFiche();
+  renderConjProgress();
 })();
 </script>
 </body>
