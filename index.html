@@ -557,6 +557,8 @@ footer{
     <p class="lead">10 questions au hasard : retrouve le mot roumain.</p>
     <div class="cj-callout"><span>Ce quiz teste le <b>vocabulaire</b>. Pour t'entraîner à <b>conjuguer</b>, utilise le quiz dédié.</span><button type="button" class="action primary" data-go-conj="train">📝 Quiz de conjugaison</button></div>
     <div class="chips" id="quiz-chips"></div>
+    <div id="quiz-count-chips" class="chips" aria-label="Nombre de questions"></div>
+    <p id="quiz-weak-note" class="tip" style="display:none">🎯 Cette série cible les mots que tu rates le plus souvent. Les statistiques sont conservées dans ton navigateur.</p>
     <div class="quiz-box" id="quiz-box"></div>
   </section>
 
@@ -4156,40 +4158,21 @@ chips(document.getElementById("fc-chips"),()=>fCat,k=>{fCat=k;fi=0;renderFc();})
 renderFc();
 
 /* ---------- QUIZ ---------- */
-let qCat=keys[0], qs=[], qi=0, qScore=0;
-const qBox=document.getElementById("quiz-box");
+let qCat=keys[0], qs=[], qi=0, qScore=0, qCount=10;
+const qBox=document.getElementById("quiz-box"), qCountBox=document.getElementById("quiz-count-chips"), qWeakNote=document.getElementById("quiz-weak-note");
+const WEAK_KEY="__weak__", quizCounts=[5,10,15,20,"all"]; P.quizStats=P.quizStats||{}; let quizSessionWrong=[];
+function statKey(cat,item){return cat+"||"+item.fr;}
+function weakScore(cat,item){const st=P.quizStats[statKey(cat,item)];return st?(st.wrong||0)*2-(st.right||0):0;}
+function recordAnswer(cat,item,correct){const k=statKey(cat,item),st=P.quizStats[k]||{right:0,wrong:0};if(correct)st.right++;else st.wrong++;P.quizStats[k]=st;save();}
+function allQuizItems(){return keys.flatMap(k=>VOCAB[k].items.map(it=>({...it,__cat:k})));}
+function weakPool(){return allQuizItems().sort((a,b)=>weakScore(b.__cat,b)-weakScore(a.__cat,a)+Math.random()-.5);}
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-function startQuiz(){
-  const items=VOCAB[qCat].items;
-  qs=shuffle(items).slice(0,Math.min(10,items.length)).map(c=>({
-    c, opts: shuffle([c,...shuffle(items.filter(x=>x!==c)).slice(0,3)])
-  }));
-  qi=0;qScore=0;renderQ();
-}
-function renderQ(){
-  if(qi>=qs.length){
-    const best=P.quiz[qCat]||0;
-    if(qScore>best){P.quiz[qCat]=qScore;save();}
-    qBox.innerHTML=`<h3>Résultat : ${qScore} / ${qs.length}</h3><p>Meilleur score : ${P.quiz[qCat]||0}</p>`;
-    const b=document.createElement("button");b.className="action primary";b.textContent="Recommencer";b.onclick=startQuiz;qBox.appendChild(b);
-    return;
-  }
-  const q=qs[qi];
-  qBox.innerHTML=`<div class="prog-label">Question ${qi+1} / ${qs.length}</div><h3>« ${q.c.fr} » en roumain ?</h3><div id="opts"></div>`;
-  const host=qBox.querySelector("#opts");
-  q.opts.forEach(o=>{
-    const b=document.createElement("button");b.className="opt-btn";b.textContent=o.ro;
-    b.onclick=()=>{
-      host.querySelectorAll(".opt-btn").forEach(x=>x.disabled=true);
-      if(o===q.c){b.classList.add("ok");qScore++;}
-      else{b.classList.add("ko");host.querySelectorAll(".opt-btn").forEach(x=>{if(x.textContent===q.c.ro)x.classList.add("ok");});}
-      setTimeout(()=>{qi++;renderQ();},900);
-    };
-    host.appendChild(b);
-  });
-}
-chips(document.getElementById("quiz-chips"),()=>qCat,k=>{qCat=k;startQuiz();});
-startQuiz();
+function renderQuizCounts(){qCountBox.innerHTML="";quizCounts.forEach(n=>{const b=document.createElement("button");b.type="button";b.className="chip"+(qCount===n?" active":"");b.textContent=n==="all"?"Toutes":String(n);b.onclick=()=>{qCount=n;renderQuizCounts();startQuiz();};qCountBox.appendChild(b);});}
+function renderQuizChips(){const host=document.getElementById("quiz-chips");host.innerHTML="";const weak=document.createElement("button");weak.type="button";weak.className="chip"+(qCat===WEAK_KEY?" active":"");weak.textContent="🎯 Points faibles";weak.onclick=()=>{qCat=WEAK_KEY;renderQuizChips();startQuiz();};host.appendChild(weak);keys.forEach(k=>{const b=document.createElement("button");b.type="button";b.className="chip"+(qCat===k?" active":"");b.textContent=VOCAB[k].label;b.onclick=()=>{qCat=k;renderQuizChips();startQuiz();};host.appendChild(b);});qWeakNote.style.display=qCat===WEAK_KEY?"block":"none";}
+function buildQuizQuestions(){let pool=qCat===WEAK_KEY?weakPool():VOCAB[qCat].items.map(it=>({...it,__cat:qCat}));const n=qCount==="all"?pool.length:Math.min(Number(qCount),pool.length);return shuffle(pool).slice(0,n).map(c=>({c,opts:shuffle([c,...shuffle(allQuizItems().filter(x=>x.ro!==c.ro)).slice(0,3)])}));}
+function startQuiz(){qs=buildQuizQuestions();qi=0;qScore=0;quizSessionWrong=[];renderQ();}
+function renderQ(){if(qi>=qs.length){const best=P.quiz[qCat]||0;if(qScore>best){P.quiz[qCat]=qScore;save();}qBox.innerHTML=`<h3>Résultat : ${qScore} / ${qs.length}</h3><p>Meilleur score : ${Math.max(qScore,best)} / ${qs.length}</p>${quizSessionWrong.length?`<p>🎯 ${quizSessionWrong.length} mot(s) à retravailler.</p>`:""}<button class="action primary" id="quiz-restart">Recommencer</button>${qCat!==WEAK_KEY&&quizSessionWrong.length?`<button class="action ghost" id="quiz-theme-weak">🎯 Travailler les mots ratés de ce thème</button>`:""}${qCat===WEAK_KEY?`<button class="action ghost" id="quiz-weak-again">🎯 Retenter ces mots</button>`:""}`;document.getElementById("quiz-restart").onclick=startQuiz;const wb=document.getElementById("quiz-theme-weak");if(wb)wb.onclick=()=>{qCat=WEAK_KEY;renderQuizChips();startQuiz();};const wa=document.getElementById("quiz-weak-again");if(wa)wa.onclick=startQuiz;return;}const q=qs[qi];qBox.innerHTML=`<div class="prog-label">Question ${qi+1} / ${qs.length}</div><h3>« ${q.c.fr} » en roumain ?</h3><div id="opts"></div>`;const host=qBox.querySelector("#opts");q.opts.forEach(o=>{const b=document.createElement("button");b.className="opt-btn";b.textContent=o.ro;b.onclick=()=>{host.querySelectorAll(".opt-btn").forEach(x=>x.disabled=true);const correct=o===q.c;recordAnswer(q.c.__cat,q.c,correct);if(correct){b.classList.add("ok");qScore++;}else{b.classList.add("ko");quizSessionWrong.push(q.c);host.querySelectorAll(".opt-btn").forEach(x=>{if(x.textContent===q.c.ro)x.classList.add("ok");});}setTimeout(()=>{qi++;renderQ();},700);};host.appendChild(b);});}
+renderQuizChips();renderQuizCounts();startQuiz();
 
 /* ---------- STORIES ---------- */
 const sHost=document.getElementById("stories");
