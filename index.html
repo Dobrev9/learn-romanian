@@ -51,8 +51,12 @@
   .site-footer{max-width:960px;margin:0 auto;padding:1.5rem 1.5rem 3rem;text-align:center;font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:1.05rem;color:var(--gold);}
   header .ro-title{color:var(--gold);font-style:italic;font-family:'Playfair Display',Georgia,serif;font-size:1.1rem;}
   header p{max-width:58ch;color:var(--hdr-text);margin-top:.6rem;}
-  nav{max-width:960px;margin:0 auto;display:flex;flex-wrap:wrap;gap:.5rem;padding:1.2rem 1.5rem 0;}
-  nav button{font:inherit;font-size:.92rem;background:transparent;border:2px solid var(--blue);color:var(--blue);padding:.45rem .85rem;border-radius:2px;cursor:pointer;}
+  nav{max-width:960px;margin:0 auto;display:flex;flex-wrap:wrap;gap:.85rem 1.5rem;padding:1.2rem 1.5rem 0;}
+  .nav-group{display:flex;flex-direction:column;gap:.3rem;}
+  .nav-group .nav-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;font-weight:700;color:var(--hdr-text);}
+  .nav-group .nav-btns{display:flex;flex-wrap:wrap;gap:.35rem;}
+  :root[data-theme="dark"] .nav-group .nav-label{opacity:.75;}
+  nav button{font:inherit;font-size:.85rem;background:transparent;border:2px solid var(--blue);color:var(--blue);padding:.4rem .75rem;border-radius:2px;cursor:pointer;line-height:1.2;}
   nav button:hover{background:var(--cream-dark);}
   nav button.active{background:var(--red);border-color:var(--red);color:#fff;}
   main{max-width:960px;margin:0 auto;padding:1.5rem 1.5rem 4rem;}
@@ -109,6 +113,9 @@
   .info-card h3{font-size:1.15rem;color:var(--blue);} .info-card p{margin:.35rem 0;}
   .prayer-box{background:var(--cream);border-left:3px solid var(--red);padding:.7rem .9rem;margin:.6rem 0;white-space:pre-line;font-family:'Playfair Display',Georgia,serif;font-size:1rem;line-height:1.7;}
   .culture-cta{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:1rem 0;color:var(--text2);}
+  .notes-review{background:var(--card);border:1px solid var(--cream-dark);border-left:5px solid var(--red);padding:1rem 1.2rem;margin-bottom:1.2rem;}
+  .notes-review .bar-track{margin-top:.35rem;}
+  .notes-review-actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.9rem;}
   .face .sub{font-size:.9rem;color:var(--text2);margin-top:.5rem;padding:0 1rem;}
   .face .word{padding:0 1rem;font-size:1.35rem;}
   #cu-quiz-note{margin-top:.6rem;}
@@ -268,21 +275,45 @@ footer{
 <div class="band"></div>
 
 <nav id="nav">
-  <button data-target="alpha" class="active">Alphabet</button>
-  <button data-target="pronunciation">Prononciation</button>
-  <button data-target="vocab">Vocabulaire</button>
-  <button data-target="flash">Flashcards</button>
-  <button data-target="quiz">Quiz</button>
-  <button data-target="stories">Histoires A1</button>
-  <button data-target="grammar">Grammaire A1-A2</button>
-  <button data-target="verbs">Verbes</button>
-  <button data-target="conjugation">Conjugaison ✍️</button>
-  <button data-target="prayers">Prières</button>
-  <button data-target="history">Histoire</button>
-  <button data-target="holidays">Fêtes</button>
-  <button data-target="pride">Fiertés 🇷🇴</button>
-  <button data-target="culture">Culture : cartes & quiz</button>
-  <button data-target="progress">Progression</button>
+  <div class="nav-group">
+    <span class="nav-label">📖 Langue</span>
+    <div class="nav-btns">
+      <button data-target="alpha" class="active">Alphabet</button>
+      <button data-target="pronunciation">Prononciation</button>
+      <button data-target="vocab">Vocabulaire</button>
+      <button data-target="verbs">Verbes</button>
+      <button data-target="conjugation">Conjugaison ✍️</button>
+      <button data-target="grammar">Grammaire A1-A2</button>
+    </div>
+  </div>
+  <div class="nav-group">
+    <span class="nav-label">🎯 Entraînement</span>
+    <div class="nav-btns">
+      <button data-target="flash">Flashcards</button>
+      <button data-target="quiz">Quiz</button>
+      <button data-target="culture">Culture : cartes & quiz</button>
+      <button data-target="stories">Histoires A1</button>
+      <button data-target="progress">Progression</button>
+    </div>
+  </div>
+  <div class="nav-group">
+    <span class="nav-label">🇷🇴 Culture & histoire</span>
+    <div class="nav-btns">
+      <button data-target="history">Histoire</button>
+      <button data-target="holidays">Fêtes</button>
+      <button data-target="pride">Fiertés 🇷🇴</button>
+      <button data-target="cuisine">Cuisine 🍽️</button>
+      <button data-target="monuments">Monuments 🏛️</button>
+      <button data-target="costume">Costume populaire 👗</button>
+    </div>
+  </div>
+  <div class="nav-group">
+    <span class="nav-label">🙏 Spiritualité & notes</span>
+    <div class="nav-btns">
+      <button data-target="prayers">Prières</button>
+      <button data-target="notes">Notes</button>
+    </div>
+  </div>
 </nav>
 
 <main>
@@ -681,6 +712,20 @@ Notre Père, qui es aux cieux, que ton nom soit sanctifié, que ton règne vienn
 12. Et la vie du siècle à venir. Amen.</div></div>
   </section>
 
+  <section id="sec-notes">
+    <h2>Notes & Expressions du quotidien</h2>
+    <p class="lead">Tournures utiles, mots de liaison et phrases pratiques pour parler roumain au quotidien.</p>
+    <div class="notes-review">
+      <div class="prog-label" id="notes-progress-label">Progression : —</div>
+      <div class="bar-track"><div class="bar-fill" id="notes-progress-bar" style="width:0%"></div></div>
+      <div class="notes-review-actions">
+        <button type="button" class="action primary" id="notes-go-flashcards">📇 Réviser avec les flashcards</button>
+        <button type="button" class="action ghost" id="notes-go-quiz">📝 Faire le quiz</button>
+      </div>
+    </div>
+    <div id="notes-list"></div>
+  </section>
+
   <section id="sec-history">
     <h2>Histoire de la Roumanie : Daces, principautés, unions et liberté</h2>
     <p class="lead">Des Daces et de la conquête romaine aux principautés médiévales, à l'Union de 1859, à la Grande Union de 1918, au communisme et à la Roumanie européenne.</p>
@@ -732,6 +777,46 @@ Notre Père, qui es aux cieux, que ton nom soit sanctifié, que ton règne vienn
 <div class="info-card"><h3>🦅 Symboles nationaux</h3><p>Le drapeau est un <strong>tricolore vertical : bleu, jaune, rouge</strong> (bleu côté hampe). Les armoiries portent un <strong>aigle</strong> ; le loup dace (<em>dracul</em>) est un emblème ancien. L'hymne national est <strong>« Deșteaptă-te, române! »</strong>.</p></div>
 <div class="info-card"><h3>🇷🇴 Les trois dates clés</h3><p><strong>24 janvier 1859 — Petite Union</strong> → <strong>9 mai 1877 — Indépendance</strong> → <strong>1er décembre 1918 — Grande Union</strong>.</p></div>
 <div class="culture-cta"><span>Réviser les fiertés :</span><button class="action primary cu-jump" data-cat="fierte" data-mode="cards">📇 Flashcards</button><button class="action cu-jump" data-cat="fierte" data-mode="quiz">📝 Quiz</button></div>  </section>
+
+  <section id="sec-cuisine">
+    <h2>🍽️ La cuisine roumaine</h2>
+    <p class="lead">Une cuisine paysanne d'Europe de l'Est, marquée par le maïs (mămăliga), le porc, le chou, les légumes farcis et mijotés, la crème aigre (smântână) et le fromage de brebis (brânză) — et un grand art de la conserve pour passer l'hiver (zacuscă, murături). Panorama complet : entrées, soupes, plats mijotés, pains et pâtisseries, desserts et boissons.</p>
+<div class="info-card"><h3>⭐ Les incontournables</h3><p>• <strong>Sarmale</strong> : feuilles de chou (parfois de vigne) farcies de viande hachée et de riz, mijotées longuement ; le plat national par excellence, roi des tables de fête et de Noël.</p><p>• <strong>Mămăligă</strong> : polenta de maïs, accompagnement omniprésent, souvent servie avec de la smântână et du brânză ou en remplacement du pain.</p><p>• <strong>Mici (mititei)</strong> : petites saucisses de viande hachée épicée, grillées, sans boyau ; star incontestée des grillades et des terrasses d'été.</p><p>• <strong>Ciorbă</strong> : soupe aigre (souvent à la bors / au vinaigre), déclinée en de nombreuses variantes ; la base des repas quotidiens roumains.</p><p>• <strong>Zacuscă</strong> : tartinade d'aubergines et de poivrons grillés mijotés à l'huile, préparée en bocaux à l'automne dans presque toutes les familles pour l'hiver.</p><p>• <strong>Cozonac</strong> : brioche roulée sucrée, fourrée aux noix, au cacao ou au loukoum (rahat) ; incontournable des tables de Noël et de Pâques.</p><p>• <strong>Țuică / Palincă</strong> : eau-de-vie de prune (ou d'autres fruits), apéritif national, souvent distillée en famille.</p></div>
+<div class="info-card"><h3>🥗 Entrées, salades & tartinades</h3><p>• <strong>Salată de vinete</strong> : caviar d'aubergines grillées, écrasées à l'huile et parfois à l'oignon.</p><p>• <strong>Salată de boeuf (bœuf)</strong> : macédoine de légumes et bœuf liée à la mayonnaise, très présente aux fêtes malgré son nom trompeur (peu ou pas de bœuf parfois).</p><p>• <strong>Icre / salată de icre</strong> : tarama à base d'œufs de poisson, tartinade populaire.</p><p>• <strong>Murături</strong> : légumes marinés/lacto-fermentés (concombres, choux, poivrons) conservés en bocaux pour l'hiver.</p></div>
+<div class="info-card"><h3>🧀 Fromages & produits laitiers</h3><p>• <strong>Brânză (de vacă / de burduf / telemea)</strong> : grande famille de fromages roumains, du frais type cottage cheese au fromage affiné en écorce d'épicéa (<em>brânză de burduf</em>).</p><p>• <strong>Telemea</strong> : fromage blanc saumuré, proche de la feta, souvent de brebis.</p><p>• <strong>Smântână</strong> : crème aigre épaisse, accompagnement quasi systématique des soupes et de la mămăligă.</p><p>• <strong>Cașcaval</strong> : fromage jaune à pâte pressée, souvent servi pané.</p></div>
+<div class="info-card"><h3>🍲 Soupes (ciorbă & supă)</h3><p>• <strong>Ciorbă de burtă</strong> : soupe de tripes crémeuse à l'ail et au vinaigre, réputée pour « réveiller » après une soirée arrosée.</p><p>• <strong>Ciorbă de fasole</strong> : soupe de haricots, souvent fumée (avec de l'os fumé ou de la viande de porc).</p><p>• <strong>Ciorbă rădăuțeană</strong> : soupe crémeuse au poulet et aux légumes, spécialité du nord de la Moldavie (Rădăuți).</p><p>• <strong>Ciorbă de perișoare</strong> : soupe aigre aux boulettes de viande et légumes.</p><p>• <strong>Supă</strong> : par opposition à la ciorbă, désigne une soupe non acidifiée (bouillon classique).</p></div>
+<div class="info-card"><h3>🥩 Plats mijotés & viandes</h3><p>• <strong>Tochitură</strong> : ragoût de plusieurs viandes de porc mijotées, servi avec mămăligă, œuf au plat et fromage ; grand classique festif.</p><p>• <strong>Cârnați</strong> : saucisses de porc, souvent fumées, préparées traditionnellement à l'abattage du cochon de décembre (Ignat).</p><p>• <strong>Caltaboș</strong> et <strong>tobă</strong> : charcuteries à base d'abats et de riz, spécialités de la période de Noël.</p><p>• <strong>Piftie (răcitură)</strong> : gelée de viande de porc (ou de volaille), plat froid traditionnel de Noël et du Nouvel An.</p><p>• <strong>Papricaș</strong> : ragoût de poulet ou de porc au paprika, avec des <em>găluște</em> (petites boulettes de pâte), influence hongroise en Transylvanie.</p><p>• <strong>Ardei umpluți</strong> : poivrons farcis à la viande hachée et au riz, mijotés dans une sauce tomate.</p></div>
+<div class="info-card"><h3>🍞 Pains, pâtes & spécialités régionales</h3><p>• <strong>Plăcintă</strong> : chausson ou galette fourrée (fromage, pomme, chou), décliné selon les régions.</p><p>• <strong>Covrigi</strong> : bretzels de rue moelleux, en-cas très populaire dans tout le pays.</p><p>• <strong>Mămăligă</strong> (voir « incontournables ») décline aussi en <em>balmoș</em> (variante pastorale des Carpates, au fromage et à la crème) et en <em>tocană cu mămăligă</em>.</p></div>
+<div class="info-card"><h3>🍰 Desserts & pâtisseries</h3><p>• <strong>Papanași</strong> : beignets de fromage frais, frits ou pochés, servis avec crème et confiture (souvent de myrtille) ; dessert vedette des restaurants roumains.</p><p>• <strong>Cozonac</strong> (voir « incontournables ») : brioche de fête roulée aux noix, au cacao ou au rahat.</p><p>• <strong>Plăcintă cu mere / cu brânză</strong> : chausson sucré aux pommes ou au fromage frais.</p><p>• <strong>Sarailie</strong> et <strong>Cataif (cadaif)</strong> : douceurs sirupeuses d'héritage ottoman, présentes dans le sud du pays.</p><p>• <strong>Amandine</strong> : gâteau au chocolat glacé au sirop de rhum, grand classique des pâtisseries roumaines de l'époque communiste.</p></div>
+<div class="info-card"><h3>🥃 Boissons</h3><p>• <strong>Țuică</strong> (Munténie/Olténie) et <strong>Palincă</strong> (Transylvanie/Maramureș) : eaux-de-vie de fruits, surtout de prune, patrimoine familial de distillation.</p><p>• <strong>Vin</strong> : la Roumanie a une très ancienne tradition viticole ; cépages locaux importants — <strong>Fetească neagră</strong>, <strong>Fetească albă</strong>, <strong>Fetească regală</strong>, <strong>Grasă de Cotnari</strong>.</p><p>• <strong>Socată</strong> : boisson artisanale légèrement pétillante à base de fleurs de sureau.</p><p>• <strong>Bragă</strong> : boisson fermentée à base de céréales, héritage ottoman comparable à la boza balkanique.</p></div>
+<div class="info-card"><h3>🎄 Cuisine rituelle & fêtes</h3><p>• <strong>Ignatul (20 décembre)</strong> : abattage traditionnel du cochon, point de départ des charcuteries de Noël (cârnați, caltaboș, tobă, jumări).</p><p>• <strong>Crăciunul (Noël)</strong> : sarmale, piftie, cozonac, cârnați — le grand repas de fête familiale.</p><p>• <strong>Paștele (Pâques)</strong> : œufs rouges peints, <em>drob de miel</em> (abats d'agneau), <em>pască</em> (tarte au fromage), cozonac.</p><p>• <strong>Mucenici (9 mars)</strong> : petits gâteaux en forme de huit à base de pâte, servis au sirop ou au miel et aux noix, pour la fête des 40 Martyrs.</p></div>
+<div class="info-card"><h3>🗺️ Spécialités régionales</h3><p>Comme pour le costume populaire (voir la rubrique dédiée), chaque grande région a ses propres produits phares.</p><p>• <strong>Moldavie</strong> : ciorbă rădăuțeană, plăcinte, vins de Cotnari, poissons du Danube et de la Prut.</p><p>• <strong>Transylvanie</strong> : influences hongroises et saxonnes — papricaș, găluște, gulaș, charcuterie fumée.</p><p>• <strong>Maramureș</strong> : palincă, plats pastoraux, balmoș, fromages de brebis affinés.</p><p>• <strong>Banat</strong> : influences serbes et hongroises, viandes fumées, paprika.</p><p>• <strong>Dobrogea</strong> : cuisine de la mer Noire et du Danube — poissons, pilaf, influences turques et tatares.</p><p>• <strong>Oltenie</strong> : réputée pour ses tocănițe et ses plats mijotés paysans.</p><div class="culture-cta"><span>Réviser la cuisine :</span><button class="action primary cu-jump" data-cat="cuisine" data-mode="cards">📇 Flashcards</button><button class="action cu-jump" data-cat="cuisine" data-mode="quiz">📝 Quiz</button></div></div>
+  </section>
+
+  <section id="sec-monuments">
+    <h2>🏛️ Monuments et lieux emblématiques de Roumanie</h2>
+    <p class="lead">De la citadelle dace de Sarmizegetusa aux monastères peints de Bucovine, des citadelles saxonnes de Transylvanie aux édifices de l'ère moderne — un tour des monuments les plus représentatifs du patrimoine roumain.</p>
+<div class="info-card"><h3>🏺 Antiquité dace et romaine</h3><p>• <strong>Sarmizegetusa Regia</strong> : capitale sacrée du royaume dace, dans les monts Orăștie ; classée à l'UNESCO parmi les <em>forteresses daces des monts Orăștie</em> (avec Costești-Cetățuie, Blidaru, Piatra Roșie…).</p><p>• <strong>Colonne de Trajan</strong> (Rome) : bien qu'à Rome, elle raconte en spirale les guerres daces et reste la principale source visuelle sur les Daces.</p><p>• <strong>Tropaeum Traiani (Adamclisi)</strong> : monument romain commémorant la victoire de Trajan sur les Daces, en Dobrogée.</p><p>• <strong>Pont de Trajan (Drobeta-Turnu Severin)</strong> : vestiges du plus grand pont romain jamais construit sur le Danube.</p></div>
+<div class="info-card"><h3>⛪ Monastères peints de Bucovine (UNESCO)</h3><p>• <strong>Voroneț</strong> : surnommé la « chapelle Sixtine de l'Orient » pour son célèbre bleu (le « bleu de Voroneț ») et sa fresque du Jugement dernier.</p><p>• <strong>Suceviţa, Moldovița, Humor, Arbore</strong> : autres monastères peints classés à l'UNESCO, fresques extérieures uniques au monde.</p><p>• <strong>Putna</strong> : monastère fondé par Ștefan cel Mare, qui y est enterré ; grand lieu de pèlerinage.</p></div>
+<div class="info-card"><h3>🏰 Châteaux & citadelles</h3><p>• <strong>Château de Bran</strong> : forteresse médiévale près de Brașov, associée dans l'imaginaire touristique au mythe de Dracula.</p><p>• <strong>Château de Peleș (Sinaia)</strong> : résidence royale néo-Renaissance du roi Carol Ier, l'un des châteaux les mieux conservés d'Europe.</p><p>• <strong>Château de Corvin (Hunedoara)</strong> : immense forteresse gothique-Renaissance ayant appartenu à la famille de Iancu de Hunedoara.</p><p>• <strong>Citadelle de Sighișoara</strong> : cité médiévale saxonne fortifiée, classée à l'UNESCO, ville natale légendaire de Vlad Țepeș.</p><p>• <strong>Citadelle d'Alba Iulia</strong> : citadelle Vauban où fut proclamée la Grande Union de 1918.</p></div>
+<div class="info-card"><h3>⛪ Églises fortifiées & églises en bois</h3><p>• <strong>Églises fortifiées de Transylvanie</strong> (Biertan, Viscri, Prejmer…) : bâties par la communauté saxonne, classées à l'UNESCO.</p><p>• <strong>Églises en bois du Maramureș</strong> (Ieud, Surdești, Bârsana…) : clochers effilés très hauts, classées à l'UNESCO.</p><p>• <strong>Église de Densuș</strong> : l'une des plus anciennes églises encore en activité de Roumanie, bâtie en partie avec des pierres romaines.</p></div>
+<div class="info-card"><h3>🏛️ Monuments de l'ère moderne & contemporaine</h3><p>• <strong>Palais du Parlement (Bucarest)</strong> : l'un des plus grands bâtiments administratifs du monde, construit sous Ceaușescu.</p><p>• <strong>Ateneul Român</strong> : salle de concert néoclassique emblématique de Bucarest.</p><p>• <strong>Arcul de Triumf</strong> : arc de triomphe de Bucarest, commémorant l'indépendance et la Grande Union.</p><p>• <strong>Monument de Mărășești</strong> : mausolée dédié aux soldats tombés lors des batailles de 1917.</p></div>
+<div class="info-card"><h3>🌊 Sites naturels & paysages emblématiques</h3><p>• <strong>Delta du Danube</strong> : réserve de biosphère classée à l'UNESCO, la plus grande zone humide d'Europe.</p><p>• <strong>Transfăgărășan</strong> : route de montagne spectaculaire traversant les Carpates méridionales.</p><p>• <strong>Cimitirul Vesel (le « cimetière joyeux ») de Săpânța</strong> : croix de bois peintes et épitaphes humoristiques, dans le Maramureș.</p><p>• <strong>Rosia Montana</strong> : paysage minier antique et moderne, exploitation aurifère depuis l'époque romaine.</p></div>
+<div class="info-card"><h3>🏙️ Villes-musées</h3><p>• <strong>Sighișoara</strong> (voir citadelles) · <strong>Sibiu</strong> et <strong>Brașov</strong> : centres historiques saxons de Transylvanie · <strong>Cluj-Napoca</strong> : capitale historique de Transylvanie · <strong>Iași</strong> : ancienne capitale de la Moldavie, ville de la culture roumaine.</p><div class="culture-cta"><span>Réviser les monuments :</span><button class="action primary cu-jump" data-cat="monuments" data-mode="cards">📇 Flashcards</button><button class="action cu-jump" data-cat="monuments" data-mode="quiz">📝 Quiz</button></div></div>
+  </section>
+
+  <section id="sec-costume">
+    <h2>👗 Le costume populaire roumain (portul popular)</h2>
+    <p class="lead">Le costume traditionnel roumain repose sur une structure commune très ancienne — chemise (<em>cămașă</em>/<em>ie</em>), pièce de tissu ou jupe portée à la taille, ceinture (<em>brâu</em>), coiffe et manteau de laine — mais chaque grande région historique a développé ses propres coupes, couleurs et broderies.</p>
+<div class="info-card"><h3>🧵 Structure commune</h3><p>• <strong>Cămașă / Ie</strong> : chemise de base en lin, chanvre ou coton, brodée, portée par les hommes et les femmes ; le terme « ie » (probablement d'origine latine) désigne surtout la chemise féminine brodée, aujourd'hui célébrée le <strong>24 juin, Journée mondiale de la Ie</strong>.</p><p>• <strong>Fotă / Catrință / Vâlnic</strong> : pièce(s) de tissu portée(s) par les femmes autour de la taille, par-dessus la chemise, selon la région — une seule pièce enroulée (catrință) ou deux tabliers (fotă).</p><p>• <strong>Brâu</strong> : large ceinture de laine ou de cuir, tissée, portée par les hommes comme par les femmes.</p><p>• <strong>Opinci</strong> : chaussures traditionnelles en cuir souple, lacées, portées dans tout l'espace roumain jusqu'au XXe siècle.</p><p>• <strong>Cojoc</strong> : veste ou manteau court en peau de mouton, souvent brodé, porté l'hiver.</p><p>• <strong>Căciulă</strong> : bonnet de fourrure masculin traditionnel, encore porté aujourd'hui dans certaines régions.</p></div>
+<div class="info-card"><h3>🗺️ Grandes zones ethnographiques</h3><p>La Roumanie compte environ sept grandes régions folkloriques aux costumes distincts : <strong>Muntenia</strong>, <strong>Oltenia</strong>, <strong>Moldova</strong> (avec la Bucovine), <strong>Transilvania</strong>, <strong>Maramureș</strong>, <strong>Banat</strong> et <strong>Dobrogea</strong> — elles-mêmes subdivisées en dizaines de variantes locales.</p></div>
+<div class="info-card"><h3>👘 Muntenia & Oltenia (sud)</h3><p>Le terme « ie » serait apparu dans la zone Teleorman-Argeș, en Muntenia. Les femmes portent la <strong>catrință</strong> (un seul tablier enroulé) en Muntenia, et le <strong>vâlnic</strong> ou la <strong>fotă</strong> (deux tabliers, un devant et un derrière) en Oltenie. Les broderies sont souvent géométriques, aux tons rouge et noir.</p></div>
+<div class="info-card"><h3>❄️ Moldova & Bucovina (nord-est)</h3><p>Costumes riches en broderies florales colorées, notamment en Bucovine, où les chemises sont particulièrement ornées ; les femmes y portent souvent une <strong>bundiță</strong> (petit gilet en peau de mouton brodé) par-dessus la chemise.</p></div>
+<div class="info-card"><h3>⛰️ Maramureș</h3><p>Costume parmi les plus reconnaissables : chemises blanches très amples, <strong>cioareci</strong> (pantalons étroits en drap blanc) pour les hommes, larges ceintures de cuir clouté, chapeaux de feutre noir à petit bord. Les couleurs dominantes sont le blanc et le noir, avec des accents rouges.</p></div>
+<div class="info-card"><h3>🏔️ Transilvania & Banat</h3><p>Zone d'une très grande diversité : selon l'ethnographe Paul Petrescu, on comptait seule pour la Transylvanie et le Banat une <strong>quinzaine de types principaux de costumes</strong>, contre une relative unité dans le reste du pays. Influences saxonnes et hongroises visibles dans certaines coupes et coiffes (dont la coiffe de Făgăraș, richement ornée).</p></div>
+<div class="info-card"><h3>🌊 Dobrogea</h3><p>Région de rencontre entre populations roumaines, tatares, turques et lipovènes (russes vieux-croyants) : le costume y porte des influences ottomanes et slaves, moins uniforme que dans le reste du pays du fait de ce brassage.</p></div>
+<div class="info-card"><h3>🧶 Motifs et symbolique des broderies</h3><p>Les motifs brodés (souvent sur la manche, appelée <strong>altiță</strong>) sont porteurs de sens : rivières, ciel, terre, arbre de vie… La richesse et la couleur des broderies pouvaient traditionnellement indiquer l'âge, le statut marital ou l'occasion (costume de fête, de deuil, de mariage).</p><div class="culture-cta"><span>Réviser le costume populaire :</span><button class="action primary cu-jump" data-cat="costume" data-mode="cards">📇 Flashcards</button><button class="action cu-jump" data-cat="costume" data-mode="quiz">📝 Quiz</button></div></div>
+  </section>
 
   <section id="sec-culture">
     <h2>Culture roumaine : flashcards & quiz</h2>
@@ -3868,6 +3953,40 @@ const VOCAB = {
     "fr": "entre"
    }
   ]
+ },
+ "notes": {
+  "label": "Notes & Expressions",
+  "items": [
+   {"ro": "Cum se spune... ?", "fr": "Comment dit-on... ?"},
+   {"ro": "Ce înseamnă asta ?", "fr": "Qu'est-ce que ça veut dire ?"},
+   {"ro": "Poți repeta, te rog ?", "fr": "Tu peux répéter, s'il te plaît ?"},
+   {"ro": "Vreau să vorbesc despre...", "fr": "Je veux parler de..."},
+   {"ro": "Aș vrea să vorbesc despre...", "fr": "Je voudrais parler de... (conditionnel)"},
+   {"ro": "Nu am înțeles.", "fr": "Je n'ai pas compris."},
+   {"ro": "Poți să scrii, te rog ?", "fr": "Tu peux écrire, s'il te plaît ?"},
+   {"ro": "Îmi amintesc.", "fr": "Je m'en souviens."},
+   {"ro": "Nu-mi amintesc.", "fr": "Je ne m'en souviens pas."},
+   {"ro": "E frumos.", "fr": "C'est beau."},
+   {"ro": "E greu.", "fr": "C'est difficile."},
+   {"ro": "E ușor.", "fr": "C'est facile."},
+   {"ro": "Așa e ?", "fr": "Ah bon ? / Vraiment ?"},
+   {"ro": "așa", "fr": "comme ça / ainsi"},
+   {"ro": "Învăț să vorbesc română.", "fr": "J'apprends à parler roumain."},
+   {"ro": "Să vorbim în română.", "fr": "Parlons en roumain."},
+   {"ro": "Astăzi am fost la muncă.", "fr": "Aujourd'hui, je suis allé(e) au travail."},
+   {"ro": "Mâine voi merge la muncă.", "fr": "Demain, j'irai au travail."},
+   {"ro": "ieri", "fr": "hier"},
+   {"ro": "săptămâna viitoare", "fr": "la semaine prochaine"},
+   {"ro": "Cred că...", "fr": "Je pense que..."},
+   {"ro": "Sunt de acord.", "fr": "Je suis d'accord."},
+   {"ro": "Nu sunt de acord.", "fr": "Je ne suis pas d'accord."},
+   {"ro": "După părerea mea...", "fr": "À mon avis..."},
+   {"ro": "Ai dreptate.", "fr": "Tu as raison."},
+   {"ro": "Nu-i nimic.", "fr": "Ce n'est rien / pas grave."},
+   {"ro": "Mi-e dor de tine.", "fr": "Tu me manques."},
+   {"ro": "Ne vedem curând.", "fr": "On se voit bientôt."},
+   {"ro": "Ai grijă de tine.", "fr": "Prends soin de toi."}
+  ]
  }
 };
 
@@ -4102,6 +4221,7 @@ document.querySelectorAll("#nav button").forEach(b=>{
     document.querySelectorAll("main section").forEach(s=>s.classList.remove("active"));
     document.getElementById("sec-"+b.dataset.target).classList.add("active");
     if(b.dataset.target==="progress") renderProgress();
+    if(b.dataset.target==="notes") renderNotesProgress();
   });
 });
 
@@ -4173,6 +4293,40 @@ function buildQuizQuestions(){let pool=qCat===WEAK_KEY?weakPool():VOCAB[qCat].it
 function startQuiz(){qs=buildQuizQuestions();qi=0;qScore=0;quizSessionWrong=[];renderQ();}
 function renderQ(){if(qi>=qs.length){const best=P.quiz[qCat]||0;if(qScore>best){P.quiz[qCat]=qScore;save();}qBox.innerHTML=`<h3>Résultat : ${qScore} / ${qs.length}</h3><p>Meilleur score : ${Math.max(qScore,best)} / ${qs.length}</p>${quizSessionWrong.length?`<p>🎯 ${quizSessionWrong.length} mot(s) à retravailler.</p>`:""}<button class="action primary" id="quiz-restart">Recommencer</button>${qCat!==WEAK_KEY&&quizSessionWrong.length?`<button class="action ghost" id="quiz-theme-weak">🎯 Travailler les mots ratés de ce thème</button>`:""}${qCat===WEAK_KEY?`<button class="action ghost" id="quiz-weak-again">🎯 Retenter ces mots</button>`:""}`;document.getElementById("quiz-restart").onclick=startQuiz;const wb=document.getElementById("quiz-theme-weak");if(wb)wb.onclick=()=>{qCat=WEAK_KEY;renderQuizChips();startQuiz();};const wa=document.getElementById("quiz-weak-again");if(wa)wa.onclick=startQuiz;return;}const q=qs[qi];qBox.innerHTML=`<div class="prog-label">Question ${qi+1} / ${qs.length}</div><h3>« ${q.c.fr} » en roumain ?</h3><div id="opts"></div>`;const host=qBox.querySelector("#opts");q.opts.forEach(o=>{const b=document.createElement("button");b.className="opt-btn";b.textContent=o.ro;b.onclick=()=>{host.querySelectorAll(".opt-btn").forEach(x=>x.disabled=true);const correct=o===q.c;recordAnswer(q.c.__cat,q.c,correct);if(correct){b.classList.add("ok");qScore++;}else{b.classList.add("ko");quizSessionWrong.push(q.c);host.querySelectorAll(".opt-btn").forEach(x=>{if(x.textContent===q.c.ro)x.classList.add("ok");});}setTimeout(()=>{qi++;renderQ();},700);};host.appendChild(b);});}
 renderQuizChips();renderQuizCounts();startQuiz();
+
+/* ---------- NOTES ---------- */
+const notesListEl=document.getElementById("notes-list");
+function renderNotesList(){
+  notesListEl.innerHTML="";
+  VOCAB.notes.items.forEach(it=>{
+    const d=document.createElement("div"); d.className="row";
+    d.innerHTML=`<div class="ro">${it.ro}</div><div class="fr">${it.fr}</div>`;
+    notesListEl.appendChild(d);
+  });
+}
+function renderNotesProgress(){
+  const items=VOCAB.notes.items;
+  const known=items.filter((_,i)=>P.known[kkey("notes",i)]).length;
+  const pct=items.length?Math.round(known/items.length*100):0;
+  const qBest=P.quiz["notes"]||0;
+  document.getElementById("notes-progress-label").textContent=`Progression : ${known} / ${items.length} maîtrisées — meilleur quiz : ${qBest}`;
+  document.getElementById("notes-progress-bar").style.width=pct+"%";
+}
+document.getElementById("notes-go-flashcards").addEventListener("click",()=>{
+  fCat="notes"; fi=0; renderFc();
+  chips(document.getElementById("fc-chips"),()=>fCat,k=>{fCat=k;fi=0;renderFc();});
+  goNav2("flash");
+});
+document.getElementById("notes-go-quiz").addEventListener("click",()=>{
+  qCat="notes"; renderQuizChips(); startQuiz();
+  goNav2("quiz");
+});
+function goNav2(target){
+  const btn=document.querySelector('#nav button[data-target="'+target+'"]');
+  if(btn) btn.click();
+}
+renderNotesList();
+renderNotesProgress();
 
 /* ---------- STORIES ---------- */
 const sHost=document.getElementById("stories");
@@ -4319,7 +4473,88 @@ fierte:{label:"Fiertés 🇷🇴",items:[
 ["Quel cimetière est célèbre pour ses croix colorées ?","Le Cimitirul Vesel de la Săpânța","Dans le Maramureș."],
 ["Quelle route de montagne est célèbre ?","Le Transfăgărășan","Traverse les Carpates."],
 ["Quelle sainte est vénérée à Iași ?","Sainte Parascheva","Pèlerinage en octobre."],
-["Quel est le triptyque des dates clés ?","1859 · 1877 · 1918","Petite Union, Indépendance, Grande Union."]]}
+["Quel est le triptyque des dates clés ?","1859 · 1877 · 1918","Petite Union, Indépendance, Grande Union."]]},
+
+cuisine:{label:"Cuisine 🍽️",items:[
+["Quel plat de feuilles de chou farcies est le plat national roumain ?","Les sarmale","Viande hachée et riz, mijotés longuement ; reine des tables de fête."],
+["Quelle polenta de maïs accompagne la plupart des plats roumains ?","La mămăligă","Souvent servie avec smântână et brânză."],
+["Quelles petites saucisses grillées sans boyau sont la star des grillades ?","Les mici (mititei)","Viande hachée épicée, grillée au charbon."],
+["Comment appelle-t-on une soupe aigre roumaine ?","Une ciorbă","Base des repas quotidiens roumains."],
+["Quelle tartinade d'aubergines et de poivrons grillés se prépare en bocaux pour l'hiver ?","La zacuscă","Préparée en automne dans presque toutes les familles."],
+["Quelle brioche roulée sucrée est incontournable à Noël et à Pâques ?","Le cozonac","Fourrée aux noix, au cacao ou au rahat."],
+["Quelle est l'eau-de-vie de prune traditionnelle du sud du pays ?","La țuică","Palincă est le nom utilisé en Transylvanie/Maramureș."],
+["Comment appelle-t-on le caviar d'aubergines grillées roumain ?","La salată de vinete","Aubergines grillées écrasées à l'huile."],
+["Quels légumes marinés en bocaux se préparent pour l'hiver ?","Les murături","Concombres, choux, poivrons lacto-fermentés ou marinés."],
+["Quel fromage affiné dans une écorce d'épicéa est une spécialité roumaine ?","La brânză de burduf","Fromage de brebis affiné, au goût prononcé."],
+["Quel fromage blanc saumuré, proche de la feta, est très répandu ?","La telemea","Souvent à base de lait de brebis."],
+["Quelle crème épaisse accompagne presque systématiquement soupes et mămăligă ?","La smântână","Crème aigre, incontournable de la cuisine roumaine."],
+["Quelle soupe de tripes crémeuse à l'ail est réputée pour « réveiller » ?","La ciorbă de burtă","Ail et vinaigre, souvent fumée."],
+["Quelle soupe crémeuse au poulet est une spécialité du nord de la Moldavie ?","La ciorbă rădăuțeană","Du nom de la ville de Rădăuți."],
+["Quel ragoût de plusieurs viandes de porc se sert avec mămăligă et œuf au plat ?","La tochitură","Grand classique festif roumain."],
+["Quelle gelée de viande de porc est un plat froid traditionnel de Noël ?","La piftie (răcitură)","Servie froide, souvent avec de l'ail."],
+["Quel ragoût au paprika, avec de petites boulettes de pâte, vient de l'influence hongroise ?","Le papricaș","Servi avec des găluște, surtout en Transylvanie."],
+["Quels poivrons sont farcis à la viande hachée et au riz puis mijotés en sauce tomate ?","Les ardei umpluți","Plat familial très répandu."],
+["Quels beignets de fromage frais, servis avec crème et confiture, sont un dessert vedette ?","Les papanași","Souvent accompagnés de confiture de myrtille."],
+["Quel bretzel moelleux est un en-cas de rue très populaire ?","Le covrig","Vendu dans tout le pays."],
+["Quel abattage traditionnel du cochon a lieu le 20 décembre ?","L'Ignat","Point de départ des charcuteries de Noël."],
+["Quelles charcuteries à base d'abats et de riz sont typiques de Noël ?","Le caltaboș et la tobă","Préparées lors de l'Ignat."],
+["Quel plat d'abats d'agneau accompagne traditionnellement Pâques ?","Le drob de miel","Servi avec les œufs rouges et le cozonac."],
+["Quels petits gâteaux en forme de huit se préparent pour la fête des 40 Martyrs (9 mars) ?","Les mucenici","Servis au sirop ou au miel et aux noix."],
+["Quel gâteau au chocolat glacé au sirop de rhum est un classique de l'époque communiste ?","L'amandine","Grand classique des pâtisseries roumaines."],
+["Quels sont les principaux cépages roumains pour les rouges et blancs de qualité ?","Fetească neagră, Fetească albă, Fetească regală","Avec le Grasă de Cotnari pour les blancs liquoreux."],
+["Quelle boisson artisanale légèrement pétillante se fait aux fleurs de sureau ?","La socată","Boisson d'été rafraîchissante."],
+["Quelle boisson fermentée à base de céréales est un héritage ottoman ?","La bragă","Comparable à la boza balkanique."],
+["Quel fromage jaune à pâte pressée se sert souvent pané ?","Le cașcaval","Fromage jaune traditionnel roumain."],
+["Quel plat pastoral des Carpates mélange mămăligă, fromage et crème ?","Le balmoș","Spécialité de berger, surtout au Maramureș."],
+]},
+
+monuments:{label:"Monuments 🏛️",items:[
+["Quelle était la capitale sacrée du royaume dace ?","Sarmizegetusa Regia","Dans les monts Orăștie, classée à l'UNESCO."],
+["Quel monument romain commémore la victoire de Trajan sur les Daces en Dobrogée ?","Le Tropaeum Traiani (Adamclisi)","Monument commémoratif romain."],
+["Où trouve-t-on les vestiges du plus grand pont romain jamais construit sur le Danube ?","À Drobeta-Turnu Severin","Le pont de Trajan."],
+["Quel monastère de Bucovine est surnommé « la chapelle Sixtine de l'Orient » ?","Voroneț","Célèbre pour son bleu et sa fresque du Jugement dernier."],
+["Quels autres monastères peints de Bucovine sont classés à l'UNESCO avec Voroneț ?","Sucevița, Moldovița, Humor, Arbore","Fresques extérieures uniques au monde."],
+["Quel monastère abrite le tombeau de Ștefan cel Mare ?","Putna","Grand lieu de pèlerinage en Bucovine."],
+["Quelle forteresse médiévale est associée dans l'imaginaire touristique au mythe de Dracula ?","Le château de Bran","Près de Brașov, en Transylvanie."],
+["Quel château royal néo-Renaissance a été bâti pour Carol Ier à Sinaia ?","Peleș","L'un des châteaux les mieux conservés d'Europe."],
+["Quelle immense forteresse gothique-Renaissance se trouve à Hunedoara ?","Le château de Corvin","Ayant appartenu à la famille de Iancu de Hunedoara."],
+["Quelle cité médiévale saxonne fortifiée est la ville natale légendaire de Vlad Țepeș ?","La citadelle de Sighișoara","Classée à l'UNESCO."],
+["Où fut proclamée la Grande Union de 1918 ?","À la citadelle d'Alba Iulia","Citadelle Vauban de Transylvanie."],
+["Comment appelle-t-on les églises bâties par la communauté saxonne de Transylvanie ?","Les églises fortifiées (Biertan, Viscri, Prejmer)","Classées à l'UNESCO."],
+["Quelles églises en bois aux clochers très effilés se trouvent dans le Maramureș ?","Les églises en bois du Maramureș (Ieud, Surdești, Bârsana…)","Classées à l'UNESCO."],
+["Quelle est l'une des plus anciennes églises encore en activité de Roumanie, bâtie avec des pierres romaines ?","L'église de Densuș","Construction remarquable réemployant des matériaux antiques."],
+["Quel est l'un des plus grands bâtiments administratifs du monde, à Bucarest ?","Le Palais du Parlement","Construit sous Ceaușescu."],
+["Quelle salle de concert néoclassique est emblématique de Bucarest ?","L'Ateneul Român","Haut lieu de la vie musicale roumaine."],
+["Quel arc commémore l'indépendance et la Grande Union à Bucarest ?","L'Arcul de Triumf","Arc de triomphe de la capitale."],
+["Quel mausolée est dédié aux soldats tombés en 1917 ?","Le monument de Mărășești","Mémorial de la Première Guerre mondiale."],
+["Quelle réserve de biosphère classée à l'UNESCO est la plus grande zone humide d'Europe ?","Le delta du Danube","Réserve de biosphère."],
+["Quelle route de montagne spectaculaire traverse les Carpates méridionales ?","Le Transfăgărășan","Route touristique emblématique."],
+["Quel cimetière du Maramureș est célèbre pour ses croix de bois peintes et humoristiques ?","Le Cimitirul Vesel de la Săpânța","Le « cimetière joyeux »."],
+["Quel site minier antique et moderne exploite l'or depuis l'époque romaine ?","Rosia Montana","Paysage minier historique."],
+["Quelles villes saxonnes de Transylvanie sont réputées pour leurs centres historiques ?","Sibiu et Brașov","Avec Sighișoara, hauts lieux du patrimoine saxon."],
+["Quelle ville est la capitale historique de la Transylvanie ?","Cluj-Napoca","Grand centre culturel et universitaire."],
+["Quelle ville fut l'ancienne capitale de la Moldavie ?","Iași","Grande ville de la culture roumaine."],
+]},
+
+costume:{label:"Costume populaire 👗",items:[
+["Combien de grandes régions folkloriques compte la Roumanie ?","Environ sept","Muntenia, Oltenia, Moldova, Transilvania, Maramureș, Banat, Dobrogea."],
+["Comment appelle-t-on la chemise féminine brodée traditionnelle ?","La ie","Journée mondiale de la ie le 24 juin."],
+["Quelle pièce de tissu portent les femmes de Muntenia autour de la taille ?","La catrință","Un seul tablier enroulé."],
+["Quelle pièce de tissu (deux tabliers) portent les femmes d'Oltenie ?","Le vâlnic (ou fotă)","Un tablier devant, un derrière."],
+["Comment appelle-t-on la large ceinture de laine ou de cuir tissée ?","Le brâu","Porté par les hommes comme par les femmes."],
+["Quelles chaussures traditionnelles en cuir souple lacé étaient portées dans tout le pays ?","Les opinci","Portées jusqu'au XXe siècle."],
+["Quelle veste courte en peau de mouton brodée se porte l'hiver ?","Le cojoc","Manteau traditionnel d'hiver."],
+["Quel bonnet de fourrure masculin traditionnel existe encore aujourd'hui ?","La căciulă","Bonnet traditionnel masculin."],
+["Dans quelle zone le terme « ie » serait-il apparu en premier ?","En Muntenia (zone Teleorman-Argeș)","Avant le XVIIIe siècle."],
+["Quel petit gilet en peau de mouton brodé portent les femmes de Bucovine ?","La bundiță","Porté par-dessus la chemise."],
+["Quel pantalon étroit en drap blanc portent les hommes du Maramureș ?","Les cioareci","Costume masculin du Maramureș."],
+["Quelles sont les couleurs dominantes du costume du Maramureș ?","Le blanc et le noir","Avec des accents rouges."],
+["Quel ethnographe a recensé une quinzaine de types de costumes en Transylvanie et au Banat ?","Paul Petrescu","Dans « Costumul popular românesc din Transilvania și Banat » (1959)."],
+["Quelle coiffe richement ornée est associée à la zone de Făgăraș, en Transylvanie ?","La coiffe de Făgăraș","Influencée par les traditions locales transylvaines."],
+["Quelles populations influencent le costume traditionnel de Dobrogée ?","Tatares, turques et lipovènes (russes vieux-croyants)","Région de brassage culturel."],
+["Comment appelle-t-on la manche brodée porteuse de motifs symboliques (rivières, ciel, arbre de vie) ?","L'altiță","Manche brodée de la chemise traditionnelle."],
+["Que pouvait traditionnellement indiquer la richesse des broderies d'un costume ?","L'âge, le statut marital ou l'occasion","Costume de fête, de deuil ou de mariage."],
+]},
 };
 
 /* ---- stockage ---- */
