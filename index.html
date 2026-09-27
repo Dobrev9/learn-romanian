@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇷🇴</text></svg>">
 <title>Început — Apprendre le roumain A1-A2 by Dobrev Mathis</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Source+Sans+3:wght@400;700&display=swap');
   :root{
@@ -251,7 +252,21 @@ footer{
   .cj-callout{background:var(--card);border:1px solid var(--cream-dark);border-left:5px solid var(--red);padding:.8rem 1rem;margin-bottom:1.2rem;display:flex;flex-wrap:wrap;gap:.6rem 1rem;align-items:center;justify-content:space-between;font-size:.95rem;color:var(--text2);}
   #progress-conj .cj-label{margin-top:1rem;}
 
+  /* ---------- Carte interactive des monuments ---------- */
+  .mon-map-card{background:var(--card);border:1px solid var(--cream-dark);border-left:5px solid var(--gold);padding:1rem 1.1rem 1.2rem;margin-bottom:1rem;}
+  .mon-map-legend{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.8rem;}
+  .mon-chip{display:inline-flex;align-items:center;gap:.4rem;border:1.5px solid var(--cream-dark);background:transparent;color:var(--text2);padding:.3rem .7rem;border-radius:20px;font-size:.82rem;cursor:pointer;font-family:'Source Sans 3',Arial,sans-serif;}
+  .mon-chip .dot{width:10px;height:10px;border-radius:50%;flex:none;}
+  .mon-chip.off{opacity:.4;}
+  #monuments-map{height:440px;width:100%;border-radius:8px;border:1px solid var(--cream-dark);background:var(--paper);z-index:0;}
+  .mon-map-hint{font-size:.82rem;color:var(--muted2);margin-top:.5rem;}
+  .leaflet-popup-content-wrapper{background:var(--card);color:var(--blue-dark);border-radius:8px;}
+  .leaflet-popup-tip{background:var(--card);}
+  .mon-pop b{font-family:'Playfair Display',Georgia,serif;color:var(--blue);}
+  .mon-pop p{margin:.3rem 0 0;font-size:.85rem;color:var(--text2);}
+
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
 (function(){
   var t = null;
@@ -796,6 +811,12 @@ Notre Père, qui es aux cieux, que ton nom soit sanctifié, que ton règne vienn
   <section id="sec-monuments">
     <h2>🏛️ Monuments et lieux emblématiques de Roumanie</h2>
     <p class="lead">De la citadelle dace de Sarmizegetusa aux monastères peints de Bucovine, des citadelles saxonnes de Transylvanie aux édifices de l'ère moderne — un tour des monuments les plus représentatifs du patrimoine roumain.</p>
+<div class="mon-map-card">
+  <h3 style="margin-bottom:.6rem">🗺️ Carte des monuments</h3>
+  <div class="mon-map-legend" id="mon-legend"></div>
+  <div id="monuments-map"></div>
+  <p class="mon-map-hint">Cliquez sur un repère pour voir le nom et la description du monument ; cliquez sur une catégorie ci-dessus pour l'afficher ou la masquer.</p>
+</div>
 <div class="info-card"><h3>🏺 Antiquité dace et romaine</h3><p>• <strong>Sarmizegetusa Regia</strong> : capitale sacrée du royaume dace, dans les monts Orăștie ; classée à l'UNESCO parmi les <em>forteresses daces des monts Orăștie</em> (avec Costești-Cetățuie, Blidaru, Piatra Roșie…).</p><p>• <strong>Colonne de Trajan</strong> (Rome) : bien qu'à Rome, elle raconte en spirale les guerres daces et reste la principale source visuelle sur les Daces.</p><p>• <strong>Tropaeum Traiani (Adamclisi)</strong> : monument romain commémorant la victoire de Trajan sur les Daces, en Dobrogée.</p><p>• <strong>Pont de Trajan (Drobeta-Turnu Severin)</strong> : vestiges du plus grand pont romain jamais construit sur le Danube.</p></div>
 <div class="info-card"><h3>⛪ Monastères peints de Bucovine (UNESCO)</h3><p>• <strong>Voroneț</strong> : surnommé la « chapelle Sixtine de l'Orient » pour son célèbre bleu (le « bleu de Voroneț ») et sa fresque du Jugement dernier.</p><p>• <strong>Suceviţa, Moldovița, Humor, Arbore</strong> : autres monastères peints classés à l'UNESCO, fresques extérieures uniques au monde.</p><p>• <strong>Putna</strong> : monastère fondé par Ștefan cel Mare, qui y est enterré ; grand lieu de pèlerinage.</p></div>
 <div class="info-card"><h3>🏰 Châteaux & citadelles</h3><p>• <strong>Château de Bran</strong> : forteresse médiévale près de Brașov, associée dans l'imaginaire touristique au mythe de Dracula.</p><p>• <strong>Château de Peleș (Sinaia)</strong> : résidence royale néo-Renaissance du roi Carol Ier, l'un des châteaux les mieux conservés d'Europe.</p><p>• <strong>Château de Corvin (Hunedoara)</strong> : immense forteresse gothique-Renaissance ayant appartenu à la famille de Iancu de Hunedoara.</p><p>• <strong>Citadelle de Sighișoara</strong> : cité médiévale saxonne fortifiée, classée à l'UNESCO, ville natale légendaire de Vlad Țepeș.</p><p>• <strong>Citadelle d'Alba Iulia</strong> : citadelle Vauban où fut proclamée la Grande Union de 1918.</p></div>
@@ -5560,6 +5581,128 @@ function renderCultureProgress(){
   renderVChips();
   renderFiche();
   renderConjProgress();
+})();
+</script>
+
+<script>
+/* ---------- Carte interactive des monuments ---------- */
+(function(){
+  const MON_CATS = {
+    antiquite:  { label:"🏺 Antiquité dace et romaine",              color:"#A4243B" },
+    monasteres: { label:"⛪ Monastères peints de Bucovine",           color:"#D29B1E" },
+    chateaux:   { label:"🏰 Châteaux & citadelles",                  color:"#1B3A6B" },
+    eglises:    { label:"⛪ Églises fortifiées & en bois",            color:"#5A7150" },
+    moderne:    { label:"🏛️ Ère moderne & contemporaine",            color:"#6B4C9A" },
+    nature:     { label:"🌊 Sites naturels & paysages",               color:"#2E8B8B" },
+    villes:     { label:"🏙️ Villes-musées",                          color:"#8B5E3C" }
+  };
+
+  const MONUMENTS = [
+    // Antiquité dace et romaine
+    { n:"Sarmizegetusa Regia", cat:"antiquite", lat:45.6167, lng:23.3167, d:"Capitale sacrée du royaume dace, dans les monts Orăștie (UNESCO)." },
+    { n:"Costești-Cetățuie", cat:"antiquite", lat:45.6333, lng:23.2833, d:"Forteresse dace des monts Orăștie (UNESCO)." },
+    { n:"Blidaru", cat:"antiquite", lat:45.6300, lng:23.2900, d:"Forteresse dace des monts Orăștie (UNESCO)." },
+    { n:"Piatra Roșie", cat:"antiquite", lat:45.5167, lng:23.1667, d:"Forteresse dace des monts Orăștie (UNESCO)." },
+    { n:"Colonne de Trajan (Rome)", cat:"antiquite", lat:41.8957, lng:12.4823, d:"Raconte en spirale les guerres daces ; principale source visuelle sur les Daces." },
+    { n:"Tropaeum Traiani (Adamclisi)", cat:"antiquite", lat:44.0908, lng:27.9569, d:"Monument romain commémorant la victoire de Trajan sur les Daces, en Dobrogée." },
+    { n:"Pont de Trajan (Drobeta-Turnu Severin)", cat:"antiquite", lat:44.6167, lng:22.6667, d:"Vestiges du plus grand pont romain jamais construit sur le Danube." },
+    // Monastères peints de Bucovine
+    { n:"Monastère de Voroneț", cat:"monasteres", lat:47.5167, lng:25.8667, d:"« Chapelle Sixtine de l'Orient », célèbre pour le « bleu de Voroneț » (UNESCO)." },
+    { n:"Monastère de Sucevița", cat:"monasteres", lat:47.7778, lng:25.7108, d:"Monastère peint classé à l'UNESCO." },
+    { n:"Monastère de Moldovița", cat:"monasteres", lat:47.6833, lng:25.5333, d:"Monastère peint classé à l'UNESCO." },
+    { n:"Monastère de Humor", cat:"monasteres", lat:47.5667, lng:25.8833, d:"Monastère peint classé à l'UNESCO." },
+    { n:"Monastère d'Arbore", cat:"monasteres", lat:47.6667, lng:25.9167, d:"Monastère peint classé à l'UNESCO." },
+    { n:"Monastère de Putna", cat:"monasteres", lat:47.8667, lng:25.6167, d:"Fondé par Ștefan cel Mare, qui y est enterré ; grand lieu de pèlerinage." },
+    // Châteaux & citadelles
+    { n:"Château de Bran", cat:"chateaux", lat:45.5149, lng:25.3672, d:"Forteresse médiévale associée dans l'imaginaire touristique au mythe de Dracula." },
+    { n:"Château de Peleș (Sinaia)", cat:"chateaux", lat:45.3597, lng:25.5397, d:"Résidence royale néo-Renaissance du roi Carol Ier." },
+    { n:"Château de Corvin (Hunedoara)", cat:"chateaux", lat:45.7489, lng:22.9042, d:"Immense forteresse gothique-Renaissance de la famille de Iancu de Hunedoara." },
+    { n:"Citadelle de Sighișoara", cat:"chateaux", lat:46.2197, lng:24.7947, d:"Cité médiévale saxonne fortifiée (UNESCO), ville natale légendaire de Vlad Țepeș." },
+    { n:"Citadelle d'Alba Iulia", cat:"chateaux", lat:46.0733, lng:23.5800, d:"Citadelle Vauban où fut proclamée la Grande Union de 1918." },
+    // Églises fortifiées & en bois
+    { n:"Église fortifiée de Biertan", cat:"eglises", lat:46.1167, lng:24.6167, d:"Église fortifiée saxonne de Transylvanie (UNESCO)." },
+    { n:"Église fortifiée de Viscri", cat:"eglises", lat:46.0500, lng:25.0833, d:"Église fortifiée saxonne de Transylvanie (UNESCO)." },
+    { n:"Église fortifiée de Prejmer", cat:"eglises", lat:45.7000, lng:25.7833, d:"Église fortifiée saxonne de Transylvanie (UNESCO)." },
+    { n:"Église en bois d'Ieud", cat:"eglises", lat:47.7167, lng:24.2167, d:"Église en bois du Maramureș, clocher effilé (UNESCO)." },
+    { n:"Église en bois de Surdești", cat:"eglises", lat:47.6333, lng:23.8000, d:"Église en bois du Maramureș (UNESCO)." },
+    { n:"Église en bois de Bârsana", cat:"eglises", lat:47.7833, lng:24.0500, d:"Église en bois du Maramureș (UNESCO)." },
+    { n:"Église de Densuș", cat:"eglises", lat:45.5000, lng:22.9333, d:"L'une des plus anciennes églises encore en activité, bâtie en partie avec des pierres romaines." },
+    // Ère moderne & contemporaine
+    { n:"Palais du Parlement (Bucarest)", cat:"moderne", lat:44.4275, lng:26.0873, d:"L'un des plus grands bâtiments administratifs du monde, construit sous Ceaușescu." },
+    { n:"Ateneul Român (Bucarest)", cat:"moderne", lat:44.4414, lng:26.0975, d:"Salle de concert néoclassique emblématique de Bucarest." },
+    { n:"Arcul de Triumf (Bucarest)", cat:"moderne", lat:44.4633, lng:26.0797, d:"Arc de triomphe commémorant l'indépendance et la Grande Union." },
+    { n:"Monument de Mărășești", cat:"moderne", lat:45.8833, lng:27.2333, d:"Mausolée dédié aux soldats tombés lors des batailles de 1917." },
+    // Sites naturels & paysages
+    { n:"Delta du Danube", cat:"nature", lat:45.1667, lng:29.0000, d:"Réserve de biosphère UNESCO, la plus grande zone humide d'Europe." },
+    { n:"Transfăgărășan (Bâlea Lac)", cat:"nature", lat:45.6014, lng:24.6167, d:"Route de montagne spectaculaire à travers les Carpates méridionales." },
+    { n:"Cimitirul Vesel (Săpânța)", cat:"nature", lat:47.9750, lng:23.6944, d:"« Cimetière joyeux » : croix de bois peintes et épitaphes humoristiques." },
+    { n:"Roșia Montană", cat:"nature", lat:46.3000, lng:23.1333, d:"Paysage minier, exploitation aurifère depuis l'époque romaine." },
+    // Villes-musées
+    { n:"Sibiu", cat:"villes", lat:45.7983, lng:24.1256, d:"Centre historique saxon de Transylvanie." },
+    { n:"Brașov", cat:"villes", lat:45.6427, lng:25.5887, d:"Centre historique saxon de Transylvanie." },
+    { n:"Cluj-Napoca", cat:"villes", lat:46.7712, lng:23.6236, d:"Capitale historique de la Transylvanie." },
+    { n:"Iași", cat:"villes", lat:47.1585, lng:27.6014, d:"Ancienne capitale de la Moldavie, ville de la culture roumaine." }
+  ];
+
+  let map = null, initedOnce = false;
+  const catLayers = {};
+  const catVisible = {};
+
+  function buildLegend(){
+    const host = document.getElementById("mon-legend");
+    if(!host || host.childElementCount) return;
+    Object.keys(MON_CATS).forEach(key=>{
+      catVisible[key] = true;
+      const c = MON_CATS[key];
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "mon-chip";
+      btn.dataset.cat = key;
+      btn.innerHTML = `<span class="dot" style="background:${c.color}"></span>${c.label}`;
+      btn.addEventListener("click", ()=>{
+        catVisible[key] = !catVisible[key];
+        btn.classList.toggle("off", !catVisible[key]);
+        if(!map || !catLayers[key]) return;
+        if(catVisible[key]) map.addLayer(catLayers[key]);
+        else map.removeLayer(catLayers[key]);
+      });
+      host.appendChild(btn);
+    });
+  }
+
+  function initMonumentsMap(){
+    buildLegend();
+    if(initedOnce){
+      setTimeout(()=>{ if(map) map.invalidateSize(); }, 50);
+      return;
+    }
+    if(typeof L === "undefined") return; // Leaflet non chargé (pas de réseau)
+    initedOnce = true;
+    map = L.map("monuments-map", { scrollWheelZoom:false }).setView([45.95, 25.0], 7);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 18,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
+    }).addTo(map);
+
+    Object.keys(MON_CATS).forEach(key=>{ catLayers[key] = L.layerGroup().addTo(map); });
+
+    MONUMENTS.forEach(m=>{
+      const color = MON_CATS[m.cat].color;
+      const marker = L.circleMarker([m.lat, m.lng], {
+        radius: 7, color: "#fff", weight: 1.5, fillColor: color, fillOpacity: .95
+      });
+      marker.bindPopup(`<div class="mon-pop"><b>${m.n}</b><p>${m.d}</p></div>`);
+      marker.addTo(catLayers[m.cat]);
+    });
+
+    setTimeout(()=>{ map.invalidateSize(); }, 60);
+  }
+
+  window.initMonumentsMap = initMonumentsMap;
+  const monBtn = document.querySelector('#nav button[data-target="monuments"]');
+  if(monBtn) monBtn.addEventListener("click", initMonumentsMap);
+  const monSection = document.getElementById("sec-monuments");
+  if(monSection && monSection.classList.contains("active")) initMonumentsMap();
 })();
 </script>
 </body>
