@@ -87,6 +87,11 @@
   .action.good{background:var(--green);border-color:var(--green);color:#fff;}
   .action.bad{background:var(--red);border-color:var(--red);color:#fff;}
   .prog-label{font-size:.9rem;color:var(--text2);}
+  .round-end{display:none;flex-direction:column;align-items:center;gap:.8rem;width:100%;max-width:440px;padding:1.6rem 1.2rem;background:var(--card,#fff);border:1px solid var(--line,#ddd);border-top:6px solid var(--gold,#c9a227);text-align:center;}
+  .round-end .re-title{font-weight:700;font-size:1.25rem;color:var(--blue);}
+  .round-end .re-text{font-size:.98rem;color:var(--text2);}
+  .round-end .re-btns{display:flex;flex-direction:column;gap:.6rem;width:100%;}
+  .round-end .re-btns button{width:100%;}
   .bar-track{background:var(--cream-dark);height:10px;border-radius:5px;overflow:hidden;flex:1;min-width:120px;}
   .bar-fill{height:100%;background:var(--green);}
   .prog-row{display:flex;align-items:center;gap:.8rem;margin-bottom:.6rem;}
@@ -607,7 +612,8 @@ footer{
         <div class="face front"><div class="word" id="fc-front">—</div><div class="hint">clique pour voir le roumain</div></div>
         <div class="face back"><div class="word" id="fc-back">—</div><div class="hint">clique pour revenir</div></div>
       </div></div>
-      <div class="controls">
+      <div class="round-end" id="fc-end"></div>
+      <div class="controls" id="fc-controls">
         <button class="action" id="fc-prev">← Précédent</button>
         <button class="action bad" id="fc-no">Pas encore</button>
         <button class="action good" id="fc-yes">Je connais</button>
@@ -875,8 +881,9 @@ Notre Père, qui es aux cieux, que ton nom soit sanctifié, que ton règne vienn
         <div class="face front"><div class="word" id="cu-front-word">—</div><div class="hint">clique pour voir la réponse</div></div>
         <div class="face back"><div class="word" id="cu-back-word">—</div><div class="sub" id="cu-back-sub"></div><div class="hint">clique pour revenir</div></div>
       </div></div>
-      <div class="controls"><button class="action" id="cu-prev">← Précédent</button><button class="action bad" id="cu-dontknow">Pas encore</button><button class="action good" id="cu-know">Je connais</button><button class="action" id="cu-next">Suivant →</button></div>
-      <div class="controls"><button class="action" id="cu-shuffle">🔀 Mélanger les cartes</button></div>
+      <div class="round-end" id="cu-end"></div>
+      <div class="controls" id="cu-controls"><button class="action" id="cu-prev">← Précédent</button><button class="action bad" id="cu-dontknow">Pas encore</button><button class="action good" id="cu-know">Je connais</button><button class="action" id="cu-next">Suivant →</button></div>
+      <div class="controls" id="cu-shuffle-row"><button class="action" id="cu-shuffle">🔀 Mélanger les cartes</button></div>
       <div class="prog-label" id="cu-progress"></div>
     </div>
     <div class="quiz-box" id="cu-quiz-box" style="display:none;"></div>
@@ -4496,23 +4503,75 @@ function vsRoRow(a, b){ return `<div class="row"><div class="ro">${a}</div><div 
 })();
 
 /* ---------- FLASHCARDS ---------- */
-let fCat=keys[0], fi=0;
+/* Écran de fin de tour (partagé par les flashcards vocabulaire et culture) */
+function buildRoundEnd(host, missedCount, totalCount, onMissed, onAll){
+  const plural = missedCount > 1;
+  host.innerHTML = missedCount > 0
+    ? `<div class="re-title">Tour terminé !</div>
+       <div class="re-text">Tu as cliqué sur « Pas encore » pour <b>${missedCount}</b> carte${plural?"s":""} sur ${totalCount}.<br>Que veux-tu faire ?</div>
+       <div class="re-btns">
+         <button class="action primary" data-act="missed">🔁 Refaire uniquement les ${missedCount} carte${plural?"s":""} « Pas encore »</button>
+         <button class="action" data-act="all">↺ Recommencer avec toutes les cartes (${totalCount})</button>
+       </div>`
+    : `<div class="re-title">🎉 Tour terminé !</div>
+       <div class="re-text">Aucune carte « Pas encore » sur ce tour. Bravo !</div>
+       <div class="re-btns">
+         <button class="action primary" data-act="all">↺ Recommencer avec toutes les cartes (${totalCount})</button>
+       </div>`;
+  const bm = host.querySelector('[data-act="missed"]');
+  if(bm) bm.addEventListener("click", onMissed);
+  host.querySelector('[data-act="all"]').addEventListener("click", onAll);
+}
+
+let fCat=keys[0];
+let fOrder=[], fPos=0, fMissed=new Set(), fDone=false, fRetry=false;
 const fcEl=document.getElementById("flashcard");
 function kkey(c,i){return c+":"+i;}
+function fReset(){
+  fOrder=VOCAB[fCat].items.map((_,i)=>i);
+  fPos=0; fMissed=new Set(); fDone=false; fRetry=false;
+}
+fReset();
+function fShowEnd(){
+  const total=VOCAB[fCat].items.length, host=document.getElementById("fc-end");
+  buildRoundEnd(host,fMissed.size,total,
+    ()=>{fOrder=fOrder.filter(i=>fMissed.has(i));fPos=0;fMissed=new Set();fDone=false;fRetry=true;renderFc();},
+    ()=>{fReset();renderFc();}
+  );
+  fcEl.style.display="none";
+  document.getElementById("fc-controls").style.display="none";
+  host.style.display="flex";
+  document.getElementById("fc-prog").textContent="";
+}
+function fHideEnd(){
+  fcEl.style.display="";
+  document.getElementById("fc-controls").style.display="";
+  document.getElementById("fc-end").style.display="none";
+}
 function renderFc(){
-  const items=VOCAB[fCat].items, it=items[fi];
+  const items=VOCAB[fCat].items;
+  if(!fOrder.length||fOrder.some(i=>i>=items.length)) fReset();
+  if(fDone){fShowEnd();return;}
+  fHideEnd();
+  const it=items[fOrder[fPos]];
   fcEl.classList.remove("flipped");
   document.getElementById("fc-front").textContent=it.fr;
   document.getElementById("fc-back").textContent=it.ro;
   const known=items.filter((_,i)=>P.known[kkey(fCat,i)]).length;
-  document.getElementById("fc-prog").textContent=`Carte ${fi+1} / ${items.length} — connus : ${known}`;
+  document.getElementById("fc-prog").textContent=`Carte ${fPos+1} / ${fOrder.length}${fRetry?" (révision des « Pas encore »)":""} — connus : ${known}`;
+}
+function fMove(step){
+  const n=fOrder.length;
+  if(step>0&&fPos===n-1){fDone=true;renderFc();return;}
+  fPos=(fPos+step+n)%n;
+  renderFc();
 }
 fcEl.addEventListener("click",()=>fcEl.classList.toggle("flipped"));
-document.getElementById("fc-next").onclick=()=>{fi=(fi+1)%VOCAB[fCat].items.length;renderFc();};
-document.getElementById("fc-prev").onclick=()=>{const n=VOCAB[fCat].items.length;fi=(fi-1+n)%n;renderFc();};
-document.getElementById("fc-yes").onclick=()=>{P.known[kkey(fCat,fi)]=true;save();document.getElementById("fc-next").onclick();};
-document.getElementById("fc-no").onclick=()=>{delete P.known[kkey(fCat,fi)];save();document.getElementById("fc-next").onclick();};
-chips(document.getElementById("fc-chips"),()=>fCat,k=>{fCat=k;fi=0;renderFc();});
+document.getElementById("fc-next").onclick=()=>fMove(1);
+document.getElementById("fc-prev").onclick=()=>fMove(-1);
+document.getElementById("fc-yes").onclick=()=>{const i=fOrder[fPos];P.known[kkey(fCat,i)]=true;fMissed.delete(i);save();fMove(1);};
+document.getElementById("fc-no").onclick=()=>{const i=fOrder[fPos];delete P.known[kkey(fCat,i)];fMissed.add(i);save();fMove(1);};
+chips(document.getElementById("fc-chips"),()=>fCat,k=>{fCat=k;fReset();renderFc();});
 renderFc();
 
 /* ---------- QUIZ ---------- */
@@ -4551,8 +4610,8 @@ function renderNotesProgress(){
   document.getElementById("notes-progress-bar").style.width=pct+"%";
 }
 document.getElementById("notes-go-flashcards").addEventListener("click",()=>{
-  fCat="notes"; fi=0; renderFc();
-  chips(document.getElementById("fc-chips"),()=>fCat,k=>{fCat=k;fi=0;renderFc();});
+  fCat="notes"; fReset(); renderFc();
+  chips(document.getElementById("fc-chips"),()=>fCat,k=>{fCat=k;fReset();renderFc();});
   goNav2("flash");
 });
 document.getElementById("notes-go-quiz").addEventListener("click",()=>{
@@ -4602,7 +4661,7 @@ function renderProgress(){ setTimeout(()=>{if(window.renderCultureProgress)rende
   });
 }
 document.getElementById("reset-all").onclick=()=>{
-  if(confirm("Effacer toute la progression ?")){P={known:{},quiz:{}};save();renderProgress();renderFc();cuRenderCard();}
+  if(confirm("Effacer toute la progression ?")){P={known:{},quiz:{}};save();renderProgress();fReset();renderFc();cuRenderCard();}
 };
 
 
@@ -4856,9 +4915,28 @@ function cuQuizStore(){ if(!P.cultureQuiz)P.cultureQuiz={}; return P.cultureQuiz
 function cuKey(c,i){return c+"#"+i;}
 const cuChipsEl=document.getElementById("cu-chips"), cuCardsWrap=document.getElementById("cu-cards-wrap"),
   cuQuizBox=document.getElementById("cu-quiz-box"), cuFlashEl=document.getElementById("cu-flashcard");
+let cuFullOrder=null, cuMissed=new Set(), cuDone=false, cuRetry=false;
 let cuCat=Object.keys(CULTURE)[0], cuOrder=null, cuPos=0, cuMode="cards", cuQs=[], cuQi=0, cuScore=0;
 function cuItems(){return CULTURE[cuCat].items;}
-function cuBuildOrder(sh){const b=cuItems().map((_,i)=>i);cuOrder=sh?shuffle(b):b;cuPos=0;}
+function cuBuildOrder(sh){const b=cuItems().map((_,i)=>i);cuFullOrder=sh?shuffle(b):b;cuOrder=cuFullOrder.slice();cuPos=0;cuMissed=new Set();cuDone=false;cuRetry=false;}
+function cuShowEnd(){
+  const host=document.getElementById("cu-end");
+  buildRoundEnd(host,cuMissed.size,cuFullOrder.length,
+    ()=>{cuOrder=cuFullOrder.filter(i=>cuMissed.has(i));cuPos=0;cuMissed=new Set();cuDone=false;cuRetry=true;cuRenderCard();},
+    ()=>{cuOrder=cuFullOrder.slice();cuPos=0;cuMissed=new Set();cuDone=false;cuRetry=false;cuRenderCard();}
+  );
+  cuFlashEl.style.display="none";
+  document.getElementById("cu-controls").style.display="none";
+  document.getElementById("cu-shuffle-row").style.display="none";
+  host.style.display="flex";
+  document.getElementById("cu-progress").textContent="";
+}
+function cuHideEnd(){
+  cuFlashEl.style.display="";
+  document.getElementById("cu-controls").style.display="";
+  document.getElementById("cu-shuffle-row").style.display="";
+  document.getElementById("cu-end").style.display="none";
+}
 function cuRenderChips(){
   cuChipsEl.innerHTML="";
   Object.entries(CULTURE).forEach(([k,c])=>{
@@ -4869,21 +4947,23 @@ function cuRenderChips(){
 }
 cuFlashEl.addEventListener("click",()=>cuFlashEl.classList.toggle("flipped"));
 function cuRenderCard(){
-  const items=cuItems(); if(!cuOrder||cuOrder.length!==items.length)cuBuildOrder(false);
+  const items=cuItems(); if(!cuFullOrder||cuFullOrder.length!==items.length)cuBuildOrder(false);
+  if(cuDone){cuShowEnd();return;}
+  cuHideEnd();
   const it=items[cuOrder[cuPos]];
   document.getElementById("cu-front-word").textContent=it[0];
   document.getElementById("cu-back-word").textContent=it[1];
   document.getElementById("cu-back-sub").textContent=it[2]||"";
   cuFlashEl.classList.remove("flipped");
   const kn=cuKnownStore(), n=items.filter((_,i)=>kn[cuKey(cuCat,i)]).length;
-  document.getElementById("cu-progress").textContent=`Carte ${cuPos+1} / ${items.length} — ${n}/${items.length} maîtrisées dans ce thème`;
+  document.getElementById("cu-progress").textContent=`Carte ${cuPos+1} / ${cuOrder.length}${cuRetry?" (révision des « Pas encore »)":""} — ${n}/${items.length} maîtrisées dans ce thème`;
 }
-function cuMove(s){const n=cuOrder.length;cuPos=(cuPos+s+n)%n;cuRenderCard();}
+function cuMove(s){const n=cuOrder.length;if(s>0&&cuPos===n-1){cuDone=true;cuRenderCard();return;}cuPos=(cuPos+s+n)%n;cuRenderCard();}
 document.getElementById("cu-next").onclick=()=>cuMove(1);
 document.getElementById("cu-prev").onclick=()=>cuMove(-1);
 document.getElementById("cu-shuffle").onclick=()=>{cuBuildOrder(true);cuRenderCard();};
-document.getElementById("cu-know").onclick=()=>{cuKnownStore()[cuKey(cuCat,cuOrder[cuPos])]=true;save();cuMove(1);};
-document.getElementById("cu-dontknow").onclick=()=>{delete cuKnownStore()[cuKey(cuCat,cuOrder[cuPos])];save();cuMove(1);};
+document.getElementById("cu-know").onclick=()=>{cuKnownStore()[cuKey(cuCat,cuOrder[cuPos])]=true;cuMissed.delete(cuOrder[cuPos]);save();cuMove(1);};
+document.getElementById("cu-dontknow").onclick=()=>{delete cuKnownStore()[cuKey(cuCat,cuOrder[cuPos])];cuMissed.add(cuOrder[cuPos]);save();cuMove(1);};
 
 function cuStartQuiz(){
   const items=cuItems();
