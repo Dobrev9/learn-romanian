@@ -265,6 +265,21 @@ footer{
   .mon-pop b{font-family:'Playfair Display',Georgia,serif;color:var(--blue);}
   .mon-pop p{margin:.3rem 0 0;font-size:.85rem;color:var(--text2);}
 
+
+  /* ---- Recherche ---- */
+  .vs-bar{ position:relative; margin:0 0 .5rem; }
+  .vs-bar svg.vs-ico{ position:absolute; left:.85rem; top:50%; transform:translateY(-50%); width:20px; height:20px; color:var(--blue); pointer-events:none; }
+  .vs-bar input{ width:100%; box-sizing:border-box; font:inherit; font-size:1.02rem; padding:.7rem 2.6rem .7rem 2.7rem; background:var(--card); color:inherit; border:1.5px solid var(--cream-dark); border-radius:999px; outline:none; }
+  .vs-bar input:focus{ border-color:var(--blue); box-shadow:0 0 0 3px rgba(128,128,128,.18); }
+  .vs-clear{ position:absolute; right:.55rem; top:50%; transform:translateY(-50%); width:30px; height:30px; border:0; border-radius:50%; background:transparent; color:var(--muted); font-size:1.1rem; cursor:pointer; display:none; }
+  .vs-clear:hover{ background:var(--cream-dark); }
+  .vs-bar.has-text .vs-clear{ display:block; }
+  .vs-count{ font-size:.88rem; color:var(--muted); margin:0 0 .8rem .4rem; min-height:1.2em; }
+  .vs-h{ font-size:1rem; margin:1.3rem 0 .5rem; color:var(--blue); }
+  .vs-empty{ padding:1rem; text-align:center; color:var(--muted); background:var(--card); border:1px dashed var(--cream-dark); }
+  .vs-form{ font-family:'PT Serif', Georgia, serif; color:var(--blue); font-size:1.1rem; }
+  .vs-form small{ font-family:inherit; color:var(--muted); font-size:.82rem; }
+  mark.vs-mark{ background:rgba(192,138,46,.38); color:inherit; border-radius:3px; padding:0 1px; }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
@@ -575,6 +590,12 @@ footer{
   <section id="sec-vocab">
     <h2>Vocabulaire par thème</h2>
     <p class="lead">Choisis un thème pour revoir la liste complète.</p>
+    <div class="vs-bar" id="vc-bar" role="search">
+      <svg class="vs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg>
+      <input id="vc-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Rechercher un mot dans tous les thèmes (français ou roumain, avec ou sans accents)…" aria-label="Rechercher un mot">
+      <button type="button" class="vs-clear" id="vc-clear" aria-label="Effacer la recherche">✕</button>
+    </div>
+    <div class="vs-count" id="vc-count" aria-live="polite"></div>
     <div class="chips" id="vocab-chips"></div>
     <div id="vocab-list"></div>
   </section>
@@ -633,7 +654,14 @@ footer{
     <h2>Verbes et tableaux de conjugaison</h2>
     <p class="lead">Les verbes indispensables du roumain : présent, passé composé (« am / ai / a… » + participe) et futur (« voi / vei / va… » + infinitif). À l'oral, le futur se dit souvent <span class="ro-cell">o să</span> + subjonctif : <span class="ro-cell">o să merg</span>.</p>
     <div class="cj-callout"><span>Pour t'entraîner à <b>conjuguer</b> (fiches avec audio, imparfait, subjonctif, impératif, exercices variés), utilise l'onglet Conjugaison.</span><button type="button" class="action primary" data-go-conj="train">📝 S'entraîner</button></div>
+    <div class="vs-bar" id="vs-bar" role="search">
+      <svg class="vs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg>
+      <input id="vs-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Rechercher un verbe ou une forme (français ou roumain)…" aria-label="Rechercher un verbe">
+      <button type="button" class="vs-clear" id="vs-clear" aria-label="Effacer la recherche">✕</button>
+    </div>
+    <div class="vs-count" id="vs-count" aria-live="polite"></div>
     <div id="verb-tables"></div>
+    <div id="vs-extra"></div>
   </section>
 
   <section id="sec-conjugation">
@@ -4402,6 +4430,73 @@ function renderVocab(){
 chips(document.getElementById("vocab-chips"),()=>vCat,k=>{vCat=k;renderVocab();});
 renderVocab();
 
+/* ---------------- RECHERCHE : utilitaires ---------------- */
+function vsNorm(str){ return (str||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase(); }
+function vsEsc(str){ return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function vsHl(text, qn){
+  text = String(text||"");
+  if(!qn) return vsEsc(text);
+  let n="", map=[];
+  for(let i=0;i<text.length;i++){
+    const c = vsNorm(text[i]);
+    for(let k=0;k<c.length;k++){ n+=c[k]; map.push(i); }
+  }
+  const ranges=[]; let from=0, idx;
+  while((idx = n.indexOf(qn, from)) !== -1){
+    let st = map[idx], en = map[idx+qn.length-1]+1;
+    while(en<text.length && /[\u0300-\u036f]/.test(text[en])) en++;
+    ranges.push([st,en]); from = idx+qn.length;
+  }
+  if(!ranges.length) return vsEsc(text);
+  let out="", pos=0;
+  ranges.forEach(([st,en])=>{
+    if(st<pos) st=pos;
+    out += vsEsc(text.slice(pos,st)) + '<mark class="vs-mark">' + vsEsc(text.slice(st,en)) + '</mark>';
+    pos = en;
+  });
+  return out + vsEsc(text.slice(pos));
+}
+function vsMatch(it, qn){
+  return ["bg","ro","fr","tr"].some(k=>typeof it[k]==="string" && vsNorm(it[k]).includes(qn));
+}
+
+function vsRoRow(a, b){ return `<div class="row"><div class="ro">${a}</div><div class="fr">${b}</div></div>`; }
+
+/* ---------------- RECHERCHE : VOCABULAIRE (tous les thèmes) ---------------- */
+(function(){
+  const input=document.getElementById("vc-input"), bar=document.getElementById("vc-bar"),
+        clear=document.getElementById("vc-clear"), count=document.getElementById("vc-count");
+  const chipsEl=document.getElementById("vocab-chips");
+  const MAX=150;
+  function render(){
+    const raw=input.value.trim(), qn=vsNorm(raw);
+    bar.classList.toggle("has-text", raw.length>0);
+    if(!qn){
+      chipsEl.style.display=""; count.textContent="";
+      renderVocab();
+      return;
+    }
+    chipsEl.style.display="none";
+    let total=0, shown=0, html="";
+    Object.keys(VOCAB).forEach(key=>{
+      const hits=VOCAB[key].items.filter(it=>vsMatch(it,qn));
+      if(!hits.length) return;
+      total+=hits.length;
+      if(shown>=MAX) return;
+      const part=hits.slice(0,MAX-shown);
+      shown+=part.length;
+      html+=`<h3 class="vs-h">${vsEsc(VOCAB[key].label)} (${hits.length})</h3>`+part.map(it=>vsRoRow(vsHl(it.ro,qn), vsHl(it.fr,qn))).join("");
+    });
+    if(!total) html=`<div class="vs-empty">Aucun résultat pour « ${vsEsc(raw)} ». Essaie un autre mot, avec ou sans accents.</div>`;
+    else if(total>shown) html+=`<p class="vs-count">… ${total-shown} autres résultats : précise ta recherche.</p>`;
+    vList.innerHTML=html;
+    count.textContent=total?`${total} résultat${total>1?"s":""} dans tous les thèmes`:"";
+  }
+  input.addEventListener("input", render);
+  input.addEventListener("keydown", e=>{ if(e.key==="Escape"){ input.value=""; render(); } });
+  clear.addEventListener("click", ()=>{ input.value=""; render(); input.focus(); });
+})();
+
 /* ---------- FLASHCARDS ---------- */
 let fCat=keys[0], fi=0;
 const fcEl=document.getElementById("flashcard");
@@ -4545,6 +4640,61 @@ const VERB_TABLES=[
   pr.map((p,i)=>`<tr><td>${p}</td><td class="ro-cell">${["eram","erai","era","eram","erați","erau"][i]}</td><td class="ro-cell">${["aș vrea","ai vrea","ar vrea","am vrea","ați vrea","ar vrea"][i]}</td></tr>`).join("")+`</table><div class="tip">Subjonctif : <span class="ro-cell">să dau, să dai, să dea, să dăm, să dați, să dea</span> (a da).</div>`;
   host.appendChild(e);
 })();
+
+/* ---------------- RECHERCHE : VERBES ---------------- */
+(function(){
+  const input=document.getElementById("vs-input"), bar=document.getElementById("vs-bar"),
+        clear=document.getElementById("vs-clear"), count=document.getElementById("vs-count"),
+        extra=document.getElementById("vs-extra"), host=document.getElementById("verb-tables");
+  const EXTRA_T=["impf","subj","imp"];  // temps absents des tableaux affichés
+  function render(){
+    const raw=input.value.trim(), qn=vsNorm(raw);
+    bar.classList.toggle("has-text", raw.length>0);
+    const cards=Array.from(host.children);
+    if(!qn){
+      cards.forEach(c=>c.style.display="");
+      extra.innerHTML=""; count.textContent=""; return;
+    }
+    let vis=0;
+    cards.forEach(c=>{
+      const ok=vsNorm(c.textContent).includes(qn);
+      c.style.display=ok?"":"none"; if(ok) vis++;
+    });
+    const rows=[];
+    const CJ=window.CJ;
+    if(CJ){
+      CJ.VERBS.forEach(v=>{
+        EXTRA_T.forEach(t=>{
+          const arr=v[t]; if(!arr) return;
+          const pers=t==="imp"?CJ.PERS_IMP:CJ.PERS;
+          const groups=new Map();
+          arr.forEach((f,i)=>{
+            if(!vsNorm(f).includes(qn)) return;
+            if(!groups.has(f)) groups.set(f,[]);
+            groups.get(f).push(pers[i]);
+          });
+          groups.forEach((ps,f)=>{
+            rows.push(`<div class="row"><div class="ro">${vsHl(f,qn)}</div><div class="fr">${vsEsc(v.ro||"")} (${vsEsc(v.fr)}) · ${vsEsc(CJ.TENSES[t].label)} · ${ps.map(p=>vsEsc(p.fr)).join(" / ")}</div></div>`);
+          });
+        });
+      });
+    }
+    let html="";
+    if(rows.length){
+      const shown=rows.slice(0,40);
+      html+=`<h3 class="vs-h">Imparfait, subjonctif, impératif (${rows.length})</h3>${shown.join("")}`;
+      if(rows.length>shown.length) html+=`<p class="vs-count">… ${rows.length-shown.length} autres résultats : précise ta recherche.</p>`;
+    }
+    const total=vis+rows.length;
+    if(!total) html=`<div class="vs-empty">Aucun résultat pour « ${vsEsc(raw)} ». Essaie un autre mot, avec ou sans accents.</div>`;
+    extra.innerHTML=html;
+    count.textContent=total?`${vis} tableau${vis>1?"x":""} de verbe${rows.length?` · ${rows.length} forme${rows.length>1?"s":""} supplémentaire${rows.length>1?"s":""}`:""}`:"";
+  }
+  input.addEventListener("input", render);
+  input.addEventListener("keydown", e=>{ if(e.key==="Escape"){ input.value=""; render(); } });
+  clear.addEventListener("click", ()=>{ input.value=""; render(); input.focus(); });
+})();
+
 
 /* ================= CULTURE : HISTOIRE / FÊTES / FIERTÉS ================= */
 const CULTURE={
@@ -5020,6 +5170,7 @@ function renderCultureProgress(){
     return v;
   });
   const VBY = {}; VERBS.forEach(v=>{ VBY[v.id]=v; });
+  window.CJ = {VERBS, PERS, PERS_IMP, TENSES, T_ORDER, GROUPS};
 
   /* Phrases à trous : [verbe, temps, index personne, phrase avec ___, traduction] */
   const SENT = [
