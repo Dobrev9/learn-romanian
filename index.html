@@ -138,6 +138,9 @@ footer{
   :root[data-theme="dark"]{--ok:#5E9A5E;--ok-bg:#1f3325;--bad-bg:#3a2028;--paper:#252b3b;}
   .action.ghost{background:transparent;border-color:var(--muted2);color:var(--muted2);}
   .action:disabled{opacity:.5;cursor:not-allowed;}
+  .retry-bar{ display:flex; justify-content:center; width:100%; margin-top:.9rem; }
+  .action.retry-btn{ border-color:var(--red); color:var(--red); font-weight:700; }
+  .action.retry-btn:disabled{ opacity:.4; }
   .rc{font-family:'Playfair Display',Georgia,serif;color:var(--blue);}
   .tbl-scroll{overflow-x:auto;max-width:100%;}
   .ipa{font-family:'Noto Sans','Segoe UI','DejaVu Sans',Arial,sans-serif;color:var(--green);white-space:nowrap;}
@@ -619,6 +622,7 @@ footer{
         <button class="action good" id="fc-yes">Je connais</button>
         <button class="action" id="fc-next">Suivant →</button>
       </div>
+      <div class="retry-bar" id="fc-retry-bar"><button type="button" class="action retry-btn" id="fc-retry" disabled>🔁 Retravailler mes erreurs (0)</button></div>
       <div class="prog-label" id="fc-prog"></div>
     </div>
   </section>
@@ -916,6 +920,7 @@ Notre Père, qui es aux cieux, que ton nom soit sanctifié, que ton règne vienn
       </div></div>
       <div class="round-end" id="cu-end"></div>
       <div class="controls" id="cu-controls"><button class="action" id="cu-prev">← Précédent</button><button class="action bad" id="cu-dontknow">Pas encore</button><button class="action good" id="cu-know">Je connais</button><button class="action" id="cu-next">Suivant →</button></div>
+      <div class="retry-bar" id="cu-retry-bar"><button type="button" class="action retry-btn" id="cu-retry" disabled>🔁 Retravailler mes erreurs (0)</button></div>
       <div class="controls" id="cu-shuffle-row"><button class="action" id="cu-shuffle">🔀 Mélanger les cartes</button></div>
       <div class="prog-label" id="cu-progress"></div>
     </div>
@@ -4573,13 +4578,20 @@ function fShowEnd(){
   );
   fcEl.style.display="none";
   document.getElementById("fc-controls").style.display="none";
+  document.getElementById("fc-retry-bar").style.display="none";
   host.style.display="flex";
   document.getElementById("fc-prog").textContent="";
 }
 function fHideEnd(){
   fcEl.style.display="";
   document.getElementById("fc-controls").style.display="";
+  document.getElementById("fc-retry-bar").style.display="";
   document.getElementById("fc-end").style.display="none";
+}
+function fUpdateRetry(){
+  const b=document.getElementById("fc-retry"), n=fMissed.size;
+  b.disabled=n===0;
+  b.textContent=`🔁 Retravailler mes erreurs (${n})`;
 }
 function renderFc(){
   const items=VOCAB[fCat].items;
@@ -4592,6 +4604,7 @@ function renderFc(){
   document.getElementById("fc-back").textContent=it.ro;
   const known=items.filter((_,i)=>P.known[kkey(fCat,i)]).length;
   document.getElementById("fc-prog").textContent=`Carte ${fPos+1} / ${fOrder.length}${fRetry?" (révision des « Pas encore »)":""} — connus : ${known}`;
+  fUpdateRetry();
 }
 function fMove(step){
   const n=fOrder.length;
@@ -4600,6 +4613,11 @@ function fMove(step){
   renderFc();
 }
 fcEl.addEventListener("click",()=>fcEl.classList.toggle("flipped"));
+document.getElementById("fc-retry").onclick=()=>{
+  if(!fMissed.size) return;
+  fOrder=fOrder.filter(i=>fMissed.has(i)); fPos=0; fMissed=new Set(); fDone=false; fRetry=true;
+  renderFc();
+};
 document.getElementById("fc-next").onclick=()=>fMove(1);
 document.getElementById("fc-prev").onclick=()=>fMove(-1);
 document.getElementById("fc-yes").onclick=()=>{const i=fOrder[fPos];P.known[kkey(fCat,i)]=true;fMissed.delete(i);save();fMove(1);};
@@ -4610,7 +4628,7 @@ renderFc();
 /* ---------- QUIZ ---------- */
 let qCat=keys[0], qs=[], qi=0, qScore=0, qCount=10;
 const qBox=document.getElementById("quiz-box"), qCountBox=document.getElementById("quiz-count-chips"), qWeakNote=document.getElementById("quiz-weak-note");
-const WEAK_KEY="__weak__", quizCounts=[5,10,15,20,"all"]; P.quizStats=P.quizStats||{}; let quizSessionWrong=[];
+const WEAK_KEY="__weak__", quizCounts=[5,10,15,20,"all"]; P.quizStats=P.quizStats||{}; let quizSessionWrong=[], quizTimer=null, qRetry=false;
 function statKey(cat,item){return cat+"||"+item.fr;}
 function weakScore(cat,item){const st=P.quizStats[statKey(cat,item)];return st?(st.wrong||0)*2-(st.right||0):0;}
 function recordAnswer(cat,item,correct){const k=statKey(cat,item),st=P.quizStats[k]||{right:0,wrong:0};if(correct)st.right++;else st.wrong++;P.quizStats[k]=st;save();}
@@ -4620,8 +4638,14 @@ function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor
 function renderQuizCounts(){qCountBox.innerHTML="";quizCounts.forEach(n=>{const b=document.createElement("button");b.type="button";b.className="chip"+(qCount===n?" active":"");b.textContent=n==="all"?"Toutes":String(n);b.onclick=()=>{qCount=n;renderQuizCounts();startQuiz();};qCountBox.appendChild(b);});}
 function renderQuizChips(){const host=document.getElementById("quiz-chips");host.innerHTML="";const weak=document.createElement("button");weak.type="button";weak.className="chip"+(qCat===WEAK_KEY?" active":"");weak.textContent="🎯 Points faibles";weak.onclick=()=>{qCat=WEAK_KEY;renderQuizChips();startQuiz();};host.appendChild(weak);keys.forEach(k=>{const b=document.createElement("button");b.type="button";b.className="chip"+(qCat===k?" active":"");b.textContent=VOCAB[k].label;b.onclick=()=>{qCat=k;renderQuizChips();startQuiz();};host.appendChild(b);});qWeakNote.style.display=qCat===WEAK_KEY?"block":"none";}
 function buildQuizQuestions(){let pool=qCat===WEAK_KEY?weakPool():VOCAB[qCat].items.map(it=>({...it,__cat:qCat}));const n=qCount==="all"?pool.length:Math.min(Number(qCount),pool.length);return shuffle(pool).slice(0,n).map(c=>({c,opts:shuffle([c,...shuffle(allQuizItems().filter(x=>x.ro!==c.ro)).slice(0,3)])}));}
-function startQuiz(){qs=buildQuizQuestions();qi=0;qScore=0;quizSessionWrong=[];renderQ();}
-function renderQ(){if(qi>=qs.length){const best=P.quiz[qCat]||0;if(qScore>best){P.quiz[qCat]=qScore;save();}qBox.innerHTML=`<h3>Résultat : ${qScore} / ${qs.length}</h3><p>Meilleur score : ${Math.max(qScore,best)} / ${qs.length}</p>${quizSessionWrong.length?`<p>🎯 ${quizSessionWrong.length} mot(s) à retravailler.</p>`:""}<button class="action primary" id="quiz-restart">Recommencer</button>${qCat!==WEAK_KEY&&quizSessionWrong.length?`<button class="action ghost" id="quiz-theme-weak">🎯 Travailler les mots ratés de ce thème</button>`:""}${qCat===WEAK_KEY?`<button class="action ghost" id="quiz-weak-again">🎯 Retenter ces mots</button>`:""}`;document.getElementById("quiz-restart").onclick=startQuiz;const wb=document.getElementById("quiz-theme-weak");if(wb)wb.onclick=()=>{qCat=WEAK_KEY;renderQuizChips();startQuiz();};const wa=document.getElementById("quiz-weak-again");if(wa)wa.onclick=startQuiz;return;}const q=qs[qi];qBox.innerHTML=`<div class="prog-label">Question ${qi+1} / ${qs.length}</div><h3>« ${q.c.fr} » en roumain ?</h3><div id="opts"></div>`;const host=qBox.querySelector("#opts");q.opts.forEach(o=>{const b=document.createElement("button");b.className="opt-btn";b.textContent=o.ro;b.onclick=()=>{host.querySelectorAll(".opt-btn").forEach(x=>x.disabled=true);const correct=o===q.c;recordAnswer(q.c.__cat,q.c,correct);if(correct){b.classList.add("ok");qScore++;}else{b.classList.add("ko");quizSessionWrong.push(q.c);host.querySelectorAll(".opt-btn").forEach(x=>{if(x.textContent===q.c.ro)x.classList.add("ok");});}setTimeout(()=>{qi++;renderQ();},700);};host.appendChild(b);});}
+function startQuiz(){clearTimeout(quizTimer);qs=buildQuizQuestions();qi=0;qScore=0;quizSessionWrong=[];qRetry=false;renderQ();}
+function startRetryQuiz(){
+  const items=[...new Set(quizSessionWrong)]; if(!items.length) return;
+  clearTimeout(quizTimer);
+  qs=shuffle(items).map(c=>({c,opts:shuffle([c,...shuffle(allQuizItems().filter(x=>x.ro!==c.ro)).slice(0,3)])}));
+  qi=0;qScore=0;quizSessionWrong=[];qRetry=true;renderQ();
+}
+function renderQ(){if(qi>=qs.length){const best=P.quiz[qCat]||0;if(!qRetry&&qScore>best){P.quiz[qCat]=qScore;save();}qBox.innerHTML=`<h3>Résultat : ${qScore} / ${qs.length}</h3>${qRetry?"<p>Série ciblée sur tes erreurs.</p>":`<p>Meilleur score : ${Math.max(qScore,best)} / ${qs.length}</p>`}${quizSessionWrong.length?`<p>🎯 ${quizSessionWrong.length} mot(s) à retravailler.</p>`:""}${quizSessionWrong.length?`<button class="action retry-btn" id="quiz-retry-end">🔁 Retravailler mes erreurs (${quizSessionWrong.length})</button> `:""}<button class="action primary" id="quiz-restart">Recommencer</button>${qCat!==WEAK_KEY&&quizSessionWrong.length?`<button class="action ghost" id="quiz-theme-weak">🎯 Travailler les mots ratés de ce thème</button>`:""}${qCat===WEAK_KEY?`<button class="action ghost" id="quiz-weak-again">🎯 Retenter ces mots</button>`:""}`;document.getElementById("quiz-restart").onclick=startQuiz;const re=document.getElementById("quiz-retry-end");if(re)re.onclick=startRetryQuiz;const wb=document.getElementById("quiz-theme-weak");if(wb)wb.onclick=()=>{qCat=WEAK_KEY;renderQuizChips();startQuiz();};const wa=document.getElementById("quiz-weak-again");if(wa)wa.onclick=startQuiz;return;}const q=qs[qi];qBox.innerHTML=`<div class="prog-label">Question ${qi+1} / ${qs.length}${qRetry?" (révision des erreurs)":""}</div><h3>« ${q.c.fr} » en roumain ?</h3><div id="opts"></div><div class="retry-bar"><button type="button" class="action retry-btn" id="quiz-retry-now"></button></div>`;const host=qBox.querySelector("#opts");const retryNow=document.getElementById("quiz-retry-now");const updRetryNow=()=>{retryNow.disabled=quizSessionWrong.length===0;retryNow.textContent=`🔁 Retravailler mes erreurs (${quizSessionWrong.length})`;};updRetryNow();retryNow.onclick=startRetryQuiz;q.opts.forEach(o=>{const b=document.createElement("button");b.className="opt-btn";b.textContent=o.ro;b.onclick=()=>{host.querySelectorAll(".opt-btn").forEach(x=>x.disabled=true);const correct=o===q.c;recordAnswer(q.c.__cat,q.c,correct);if(correct){b.classList.add("ok");qScore++;}else{b.classList.add("ko");quizSessionWrong.push(q.c);updRetryNow();host.querySelectorAll(".opt-btn").forEach(x=>{if(x.textContent===q.c.ro)x.classList.add("ok");});}quizTimer=setTimeout(()=>{qi++;renderQ();},700);};host.appendChild(b);});}
 renderQuizChips();renderQuizCounts();startQuiz();
 
 /* ---------- NOTES ---------- */
@@ -4950,6 +4974,7 @@ const cuChipsEl=document.getElementById("cu-chips"), cuCardsWrap=document.getEle
   cuQuizBox=document.getElementById("cu-quiz-box"), cuFlashEl=document.getElementById("cu-flashcard");
 let cuFullOrder=null, cuMissed=new Set(), cuDone=false, cuRetry=false;
 let cuCat=Object.keys(CULTURE)[0], cuOrder=null, cuPos=0, cuMode="cards", cuQs=[], cuQi=0, cuScore=0;
+let cuWrong=[], cuQRetry=false, cuQTimer=null;
 function cuItems(){return CULTURE[cuCat].items;}
 function cuBuildOrder(sh){const b=cuItems().map((_,i)=>i);cuFullOrder=sh?shuffle(b):b;cuOrder=cuFullOrder.slice();cuPos=0;cuMissed=new Set();cuDone=false;cuRetry=false;}
 function cuShowEnd(){
@@ -4960,6 +4985,7 @@ function cuShowEnd(){
   );
   cuFlashEl.style.display="none";
   document.getElementById("cu-controls").style.display="none";
+  document.getElementById("cu-retry-bar").style.display="none";
   document.getElementById("cu-shuffle-row").style.display="none";
   host.style.display="flex";
   document.getElementById("cu-progress").textContent="";
@@ -4967,8 +4993,14 @@ function cuShowEnd(){
 function cuHideEnd(){
   cuFlashEl.style.display="";
   document.getElementById("cu-controls").style.display="";
+  document.getElementById("cu-retry-bar").style.display="";
   document.getElementById("cu-shuffle-row").style.display="";
   document.getElementById("cu-end").style.display="none";
+}
+function cuUpdateRetry(){
+  const b=document.getElementById("cu-retry"), n=cuMissed.size;
+  b.disabled=n===0;
+  b.textContent=`🔁 Retravailler mes erreurs (${n})`;
 }
 function cuRenderChips(){
   cuChipsEl.innerHTML="";
@@ -4990,32 +5022,51 @@ function cuRenderCard(){
   cuFlashEl.classList.remove("flipped");
   const kn=cuKnownStore(), n=items.filter((_,i)=>kn[cuKey(cuCat,i)]).length;
   document.getElementById("cu-progress").textContent=`Carte ${cuPos+1} / ${cuOrder.length}${cuRetry?" (révision des « Pas encore »)":""} — ${n}/${items.length} maîtrisées dans ce thème`;
+  cuUpdateRetry();
 }
 function cuMove(s){const n=cuOrder.length;if(s>0&&cuPos===n-1){cuDone=true;cuRenderCard();return;}cuPos=(cuPos+s+n)%n;cuRenderCard();}
+document.getElementById("cu-retry").onclick=()=>{
+  if(!cuMissed.size) return;
+  cuOrder=cuFullOrder.filter(i=>cuMissed.has(i)); cuPos=0; cuMissed=new Set(); cuDone=false; cuRetry=true;
+  cuRenderCard();
+};
 document.getElementById("cu-next").onclick=()=>cuMove(1);
 document.getElementById("cu-prev").onclick=()=>cuMove(-1);
 document.getElementById("cu-shuffle").onclick=()=>{cuBuildOrder(true);cuRenderCard();};
 document.getElementById("cu-know").onclick=()=>{cuKnownStore()[cuKey(cuCat,cuOrder[cuPos])]=true;cuMissed.delete(cuOrder[cuPos]);save();cuMove(1);};
 document.getElementById("cu-dontknow").onclick=()=>{delete cuKnownStore()[cuKey(cuCat,cuOrder[cuPos])];cuMissed.add(cuOrder[cuPos]);save();cuMove(1);};
 
-function cuStartQuiz(){
+function cuMakeQ(c){
   const items=cuItems();
-  cuQs=shuffle(items).slice(0,Math.min(10,items.length)).map(c=>({
-    q:c[0],correct:c[1],note:c[2]||"",
-    options:shuffle([c,...shuffle(items.filter(i=>i!==c&&i[1]!==c[1])).slice(0,3)]).map(o=>o[1])
-  }));
-  cuQi=0;cuScore=0;cuRenderQ();
+  return {item:c,q:c[0],correct:c[1],note:c[2]||"",
+    options:shuffle([c,...shuffle(items.filter(i=>i!==c&&i[1]!==c[1])).slice(0,3)]).map(o=>o[1])};
+}
+function cuStartQuiz(){
+  clearTimeout(cuQTimer);
+  const items=cuItems();
+  cuQs=shuffle(items).slice(0,Math.min(10,items.length)).map(cuMakeQ);
+  cuQi=0;cuScore=0;cuWrong=[];cuQRetry=false;cuRenderQ();
+}
+function cuStartRetryQuiz(){
+  if(!cuWrong.length) return;
+  clearTimeout(cuQTimer);
+  cuQs=shuffle(cuWrong).map(cuMakeQ);
+  cuQi=0;cuScore=0;cuWrong=[];cuQRetry=true;cuRenderQ();
 }
 function cuRenderQ(){
   if(cuQi>=cuQs.length){
     const st=cuQuizStore(), best=st[cuCat]||0;
-    if(cuScore>best){st[cuCat]=cuScore;save();}
-    cuQuizBox.innerHTML=`<h3>Résultat : ${cuScore} / ${cuQs.length}</h3><p>Meilleur score : ${Math.max(cuScore,best)}</p>`;
+    if(!cuQRetry&&cuScore>best){st[cuCat]=cuScore;save();}
+    cuQuizBox.innerHTML=`<h3>Résultat : ${cuScore} / ${cuQs.length}</h3>${cuQRetry?"<p>Série ciblée sur tes erreurs.</p>":`<p>Meilleur score : ${Math.max(cuScore,best)}</p>`}`;
+    if(cuWrong.length){const r=document.createElement("button");r.className="action retry-btn";r.style.marginRight=".5rem";r.textContent=`🔁 Retravailler mes erreurs (${cuWrong.length})`;r.onclick=cuStartRetryQuiz;cuQuizBox.appendChild(r);}
     const b=document.createElement("button");b.className="action primary";b.textContent="Recommencer ce thème";b.onclick=cuStartQuiz;cuQuizBox.appendChild(b);
     return;
   }
   const q=cuQs[cuQi];
-  cuQuizBox.innerHTML=`<div class="prog-label">Question ${cuQi+1} / ${cuQs.length} — ${CULTURE[cuCat].label}</div><div class="quiz-question"></div><div id="cu-opts"></div><div class="prog-label" id="cu-quiz-note"></div>`;
+  cuQuizBox.innerHTML=`<div class="prog-label">Question ${cuQi+1} / ${cuQs.length} — ${CULTURE[cuCat].label}${cuQRetry?" (révision des erreurs)":""}</div><div class="quiz-question"></div><div id="cu-opts"></div><div class="prog-label" id="cu-quiz-note"></div><div class="retry-bar"><button type="button" class="action retry-btn" id="cu-quiz-retry-now"></button></div>`;
+  const cuRetryNow=document.getElementById("cu-quiz-retry-now");
+  const cuUpdRetryNow=()=>{cuRetryNow.disabled=cuWrong.length===0;cuRetryNow.textContent=`🔁 Retravailler mes erreurs (${cuWrong.length})`;};
+  cuUpdRetryNow();cuRetryNow.onclick=cuStartRetryQuiz;
   cuQuizBox.querySelector(".quiz-question").textContent=q.q;
   const host=cuQuizBox.querySelector("#cu-opts");
   q.options.forEach(o=>{
@@ -5023,9 +5074,9 @@ function cuRenderQ(){
     b.onclick=()=>{
       host.querySelectorAll(".opt-btn").forEach(x=>x.disabled=true);
       if(o===q.correct){b.classList.add("ok");cuScore++;}
-      else{b.classList.add("ko");host.querySelectorAll(".opt-btn").forEach(x=>{if(x.textContent===q.correct)x.classList.add("ok");});}
+      else{b.classList.add("ko");host.querySelectorAll(".opt-btn").forEach(x=>{if(x.textContent===q.correct)x.classList.add("ok");});if(!cuWrong.includes(q.item))cuWrong.push(q.item);cuUpdRetryNow();}
       if(q.note)document.getElementById("cu-quiz-note").textContent="💡 "+q.note;
-      setTimeout(()=>{cuQi++;cuRenderQ();},q.note?1600:800);
+      cuQTimer=setTimeout(()=>{cuQi++;cuRenderQ();},q.note?1600:800);
     };
     host.appendChild(b);
   });
@@ -5654,6 +5705,22 @@ function renderCultureProgress(){
     }
     beginSession(qs);
   }
+  function cjFailedQs(){
+    return sess.qs.filter((q,i)=>sess.res[i] && sess.res[i].pts<sess.res[i].max).map(q=>{
+      if(q.type==="choice" || q.type==="gap") return {...q, options:formOptions(q.v,q.t,q.pi,q.answer)};
+      return q;
+    });
+  }
+  function updErrBtn(){
+    const b = $("cj-err-now"); if(!b || !sess) return;
+    const n = cjFailedQs().length;
+    b.disabled = n===0;
+    b.textContent = `🔁 Retravailler mes erreurs (${n})`;
+  }
+  function retryErrors(){
+    const failed = cjFailedQs();
+    if(failed.length) beginSession(sh(failed));
+  }
   function beginSession(qs){
     sess = { qs, i:0, res:[], streak:0, bestStreak:0, answered:false };
     renderQuestion();
@@ -5745,7 +5812,10 @@ function renderCultureProgress(){
         ${keyboardHTML()}
         <div class="cj-actions"><button type="button" class="action primary" id="cj-submit">Vérifier</button></div>`;
     }
-    stage.innerHTML = topBar() + `<div class="cj-qbox"><div class="cj-kind">${KIND[q.type]}</div><div class="cj-q">${promptHTML(q)}</div>${body}<div id="cj-fb"></div></div>`;
+    stage.innerHTML = topBar() + `<div class="cj-qbox"><div class="cj-kind">${KIND[q.type]}</div><div class="cj-q">${promptHTML(q)}</div>${body}<div id="cj-fb"></div></div>
+      <div class="retry-bar"><button type="button" class="action retry-btn" id="cj-err-now"></button></div>`;
+    updErrBtn();
+    $("cj-err-now").addEventListener("click", retryErrors);
     $("cj-quit").addEventListener("click", ()=>{ if(confirm("Quitter cet exercice ?")) renderSetup(); });
 
     if(q.type==="choice" || q.type==="id" || q.type==="gap"){
@@ -5790,6 +5860,7 @@ function renderCultureProgress(){
     save();
     const st = stage.querySelector(".cj-streak");
     if(st) st.textContent = sess.streak>=3 ? "🔥 "+sess.streak : (sess.streak>0 ? "✔ "+sess.streak : "");
+    updErrBtn();
   }
   function answerChoice(btn){
     if(sess.answered) return;
@@ -5852,6 +5923,7 @@ function renderCultureProgress(){
     if(!sess || !$("sec-conjugation").classList.contains("active") || paneT.style.display==="none") return;
     const q = sess.qs[sess.i]; if(!q) return;
     if(e.key==="Enter"){
+      if(e.target && e.target.id==="cj-err-now") return;
       const next = $("cj-next");
       if(next){ if(document.activeElement!==next){ e.preventDefault(); nextQ(); } return; }
       if(!sess.answered && (q.type==="type" || q.type==="table")){
@@ -5920,13 +5992,7 @@ function renderCultureProgress(){
     $("cj-again").addEventListener("click", ()=>{ const qs=buildQuestions(); if(qs.length) beginSession(qs); else renderSetup(); });
     $("cj-settings").addEventListener("click", renderSetup);
     const rt = $("cj-retry");
-    if(rt) rt.addEventListener("click", ()=>{
-      const failed = sess.qs.filter((q,i)=>sess.res[i] && sess.res[i].pts<sess.res[i].max).map(q=>{
-        if(q.type==="choice" || q.type==="gap") return {...q, options:formOptions(q.v,q.t,q.pi,q.answer)};
-        return q;
-      });
-      beginSession(sh(failed));
-    });
+    if(rt) rt.addEventListener("click", retryErrors);
     renderConjProgress();
   }
 
