@@ -81,6 +81,15 @@
   .face.back{transform:rotateY(180deg);border-top:6px solid var(--red);}
   .face .word{font-family:'Playfair Display',Georgia,serif;font-size:1.6rem;}
   .face .hint{position:absolute;bottom:.7rem;font-size:.78rem;color:var(--muted);}
+  /* Paquet à mélanger (flashcards) */
+  .fc-deck{display:none;flex-direction:column;align-items:center;gap:1rem;width:100%;}
+  .fc-deck-pile{position:relative;width:100%;max-width:260px;height:170px;margin:1.2rem 0 .6rem;}
+  .fc-deck-card{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:2.2rem;color:#fff;border-radius:6px;border:2px solid var(--gold);background:repeating-linear-gradient(45deg,var(--header-bg,#1B3A6B) 0 9px,rgba(255,255,255,.07) 9px 18px);box-shadow:0 2px 5px rgba(0,0,0,.28);will-change:transform;}
+  .fc-deck-count{color:var(--muted2);font-size:.95rem;text-align:center;min-height:1.3em;}
+  .fc-deck-btns{display:flex;flex-direction:column;align-items:center;gap:.6rem;}
+  .fc-deck-btns button:disabled{opacity:.55;cursor:default;}
+  .flashcard.fc-reveal{animation:fcReveal .45s ease-out;}
+  @keyframes fcReveal{from{opacity:0;transform:translateY(14px) scale(.96);}to{opacity:1;transform:none;}}
   .controls{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;}
   .action{font:inherit;font-size:.9rem;padding:.5rem .9rem;border-radius:2px;cursor:pointer;border:2px solid var(--blue);background:transparent;color:var(--blue);}
   .action.primary{background:var(--red);border-color:var(--red);color:#fff;}
@@ -611,6 +620,14 @@ footer{
     <p class="lead">Le mot français apparaît d'abord. Clique sur la carte pour voir le roumain.</p>
     <div class="chips" id="fc-chips"></div>
     <div class="flashwrap">
+      <div class="fc-deck" id="fc-deck">
+        <div class="fc-deck-pile" id="fc-deck-pile"></div>
+        <div class="fc-deck-count" id="fc-deck-count"></div>
+        <div class="fc-deck-btns">
+          <button type="button" class="action primary" id="fc-shuffle">🔀 Mélanger</button>
+          <button type="button" class="action" id="fc-skip-shuffle">Commencer sans mélanger</button>
+        </div>
+      </div>
       <div class="flashcard" id="flashcard"><div class="fc-inner">
         <div class="face front"><div class="word" id="fc-front">—</div><div class="hint">clique pour voir le roumain</div></div>
         <div class="face back"><div class="word" id="fc-back">—</div><div class="hint">clique pour revenir</div></div>
@@ -4563,9 +4580,12 @@ function buildRoundEnd(host, missedCount, totalCount, onMissed, onAll){
 
 let fCat=keys[0];
 let fOrder=[], fPos=0, fMissed=new Set(), fDone=false, fRetry=false;
+let fStage="deck";      // "deck" = paquet à mélanger, "play" = révision en cours
+let fShuffling=false;   // animation de mélange en cours
 const fcEl=document.getElementById("flashcard");
 function kkey(c,i){return c+":"+i;}
 function fReset(){
+  fStage="deck";
   fOrder=VOCAB[fCat].items.map((_,i)=>i);
   fPos=0; fMissed=new Set(); fDone=false; fRetry=false;
 }
@@ -4573,7 +4593,7 @@ fReset();
 function fShowEnd(){
   const total=VOCAB[fCat].items.length, host=document.getElementById("fc-end");
   buildRoundEnd(host,fMissed.size,total,
-    ()=>{fOrder=fOrder.filter(i=>fMissed.has(i));fPos=0;fMissed=new Set();fDone=false;fRetry=true;renderFc();},
+    ()=>{fStage="play";fOrder=fOrder.filter(i=>fMissed.has(i));fPos=0;fMissed=new Set();fDone=false;fRetry=true;renderFc();},
     ()=>{fReset();renderFc();}
   );
   fcEl.style.display="none";
@@ -4596,6 +4616,8 @@ function fUpdateRetry(){
 function renderFc(){
   const items=VOCAB[fCat].items;
   if(!fOrder.length||fOrder.some(i=>i>=items.length)) fReset();
+  if(fStage==="deck"){fShowDeck(items.length);return;}
+  fHideDeck();
   if(fDone){fShowEnd();return;}
   fHideEnd();
   const it=items[fOrder[fPos]];
@@ -4606,6 +4628,84 @@ function renderFc(){
   document.getElementById("fc-prog").textContent=`Carte ${fPos+1} / ${fOrder.length}${fRetry?" (révision des « Pas encore »)":""} — connus : ${known}`;
   fUpdateRetry();
 }
+/* ---- Paquet + animation « Mélanger » ---- */
+const fDeckEl=document.getElementById("fc-deck");
+const fPileEl=document.getElementById("fc-deck-pile");
+const F_PILE_SIZE=8;
+function fPileBase(i){return `translate(${(i%2?1.5:-1.5)}px, ${-i*2}px) rotate(0deg)`;}
+function fBuildPile(){
+  if(fPileEl.children.length) return;
+  for(let i=0;i<F_PILE_SIZE;i++){
+    const c=document.createElement("div");
+    c.className="fc-deck-card"; c.textContent="📇";
+    c.style.zIndex=i; c.style.transform=fPileBase(i);
+    fPileEl.appendChild(c);
+  }
+}
+function fShowDeck(total){
+  fBuildPile();
+  fcEl.style.display="none";
+  document.getElementById("fc-controls").style.display="none";
+  document.getElementById("fc-retry-bar").style.display="none";
+  document.getElementById("fc-end").style.display="none";
+  fDeckEl.style.display="flex";
+  const known=VOCAB[fCat].items.filter((_,i)=>P.known[kkey(fCat,i)]).length;
+  document.getElementById("fc-deck-count").textContent=
+    fShuffling?"Mélange en cours…":`${total} cartes dans ce thème — ${known} connues`;
+  document.getElementById("fc-prog").textContent="";
+}
+function fHideDeck(){fDeckEl.style.display="none";}
+function fFisherYates(a){
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function fStartPlay(shuffled){
+  fStage="play"; fPos=0; fShuffling=false;
+  document.getElementById("fc-shuffle").disabled=false;
+  document.getElementById("fc-skip-shuffle").disabled=false;
+  renderFc();
+  if(shuffled){
+    fcEl.classList.remove("fc-reveal");
+    void fcEl.offsetWidth; // relance l'animation d'apparition
+    fcEl.classList.add("fc-reveal");
+  }
+}
+function fShuffleDeck(){
+  if(fShuffling||fStage!=="deck") return;
+  fShuffling=true;
+  document.getElementById("fc-shuffle").disabled=true;
+  document.getElementById("fc-skip-shuffle").disabled=true;
+  document.getElementById("fc-deck-count").textContent="Mélange en cours…";
+  // Vrai mélange (Fisher-Yates), différent de l'ordre actuel si possible
+  const before=fOrder.join(",");
+  fFisherYates(fOrder);
+  if(fOrder.length>1&&fOrder.join(",")===before) fFisherYates(fOrder);
+  const reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const cards=Array.from(fPileEl.children);
+  if(reduce||!cards[0].animate){setTimeout(()=>fStartPlay(true),250);return;}
+  const n=cards.length; let last=null;
+  cards.forEach((c,i)=>{
+    const dir=i%2?1:-1, by=-i*2, base=fPileBase(i);
+    const out=`translate(${dir*125}px, ${by-8}px) rotate(${dir*9}deg)`;
+    const mid=`translate(${dir*22}px, ${by}px) rotate(${-dir*3}deg)`;
+    last=c.animate([
+      {transform:base,zIndex:i,offset:0},
+      {transform:out,zIndex:i,offset:.18,easing:"ease-in-out"},
+      {transform:mid,zIndex:n-i,offset:.36},
+      {transform:out,zIndex:n-i,offset:.54,easing:"ease-in-out"},
+      {transform:mid,zIndex:(i*3)%n,offset:.72},
+      {transform:base,zIndex:i,offset:1}
+    ],{duration:1500,delay:i*45,easing:"ease-in-out"});
+  });
+  last.onfinish=()=>{
+    // petit « tapotage » final du paquet avant de révéler la 1re carte
+    fPileEl.animate([{transform:"translateY(0)"},{transform:"translateY(-7px)"},{transform:"translateY(0)"}],{duration:220})
+      .onfinish=()=>fStartPlay(true);
+  };
+}
+document.getElementById("fc-shuffle").addEventListener("click",fShuffleDeck);
+document.getElementById("fc-skip-shuffle").addEventListener("click",()=>{if(!fShuffling) fStartPlay(false);});
+
 function fMove(step){
   const n=fOrder.length;
   if(step>0&&fPos===n-1){fDone=true;renderFc();return;}
@@ -4615,6 +4715,7 @@ function fMove(step){
 fcEl.addEventListener("click",()=>fcEl.classList.toggle("flipped"));
 document.getElementById("fc-retry").onclick=()=>{
   if(!fMissed.size) return;
+  fStage="play";
   fOrder=fOrder.filter(i=>fMissed.has(i)); fPos=0; fMissed=new Set(); fDone=false; fRetry=true;
   renderFc();
 };
